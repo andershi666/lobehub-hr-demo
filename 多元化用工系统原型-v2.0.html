@@ -1,0 +1,3132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>多元化用工系统 V2.0 - Li Auto UEI Design</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        // Li Auto UEI Design System
+                        'primary': '#00665F',
+                        'primary-light': '#65A4A0',
+                        'primary-bg': 'rgba(101, 164, 160, 0.12)',
+                        'success': '#469D34',
+                        'warning': '#F3AF00',
+                        'error': '#F05151',
+                        'info': '#0070C9',
+                        'bg-page': '#EEF0F5',
+                        'bg-white': '#FFFFFF',
+                        'bg-hover': '#F5F7FA',
+                        'border': '#E5E6EB',
+                        'text-primary': '#0F0F0F',
+                        'text-secondary': '#666666',
+                        'text-tertiary': '#999999',
+                    },
+                    fontFamily: {
+                        sans: ['LiciumFont2022', '-apple-system', 'BlinkMacSystemFont', 'PingFang SC', 'Microsoft YaHei', 'sans-serif'],
+                        mono: ['RobotoMono', 'monospace'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "LiciumFont2022", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+            font-weight: 500;
+            background: #EEF0F5;
+            color: #0F0F0F;
+            line-height: 1.6;
+        }
+
+        /* Header - Li Auto Style */
+        .header {
+            background: rgba(0, 0, 0, 1);
+            height: 48px;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            box-shadow: 0 4px 12px 0 rgba(2, 24, 21, 0.03), 0 0 1px 0 rgba(2, 24, 21, 0.16);
+        }
+
+        /* Sidebar - Li Auto Style */
+        .sidebar {
+            width: 224px;
+            background: #FFFFFF;
+            position: fixed;
+            left: 0;
+            top: 48px;
+            bottom: 0;
+            border-right: 1px solid #E5E6EB;
+            overflow-y: auto;
+            z-index: 90;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: #F5F7FA;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #D0D5DD;
+            border-radius: 3px;
+        }
+
+        .nav-item {
+            margin: 2px 10px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            color: #0F0F0F;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .nav-link:hover {
+            background: #F5F7FA;
+        }
+
+        .nav-link.active {
+            background: rgba(101, 164, 160, 0.12);
+            color: #00665F;
+            font-weight: 600;
+        }
+
+        .nav-icon {
+            margin-right: 12px;
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 224px;
+            margin-top: 48px;
+            padding: 16px;
+            min-height: calc(100vh - 48px);
+        }
+
+        /* Cards - Li Auto Style */
+        .card {
+            background: #FFFFFF;
+            border: 1px solid #E5E6EB;
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .card-hover:hover {
+            border-color: #00665F;
+            transition: border-color 0.3s;
+        }
+
+        /* Buttons - Li Auto Style */
+        .btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: #00665F;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: rgba(101, 164, 160, 0.12);
+            color: #00665F;
+            box-shadow: inset 0 0 0 1px #00665F;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #0F0F0F;
+            border: 1px solid #E5E6EB;
+        }
+
+        .btn-secondary:hover {
+            background: #F5F7FA;
+            border-color: #00665F;
+            color: #00665F;
+        }
+
+        /* Tables - Li Auto Style */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            background: #FFFFFF;
+            color: #666666;
+            font-size: 12px;
+            font-weight: 500;
+            height: 40px;
+            padding: 0 16px;
+            text-align: left;
+            border-bottom: 1px solid #E5E6EB;
+        }
+
+        .data-table td {
+            font-size: 13px;
+            font-weight: 400;
+            height: 48px;
+            padding: 0 16px;
+            border-bottom: 1px solid #E5E6EB;
+        }
+
+        .data-table tr:hover td {
+            background: #F5F7FA;
+        }
+
+        /* Form Elements */
+        .input-field {
+            padding: 8px 12px;
+            border: 1px solid #E5E6EB;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+            outline: none;
+            width: 100%;
+        }
+
+        .input-field:focus {
+            border-color: #00665F;
+            box-shadow: 0 0 0 3px rgba(0, 102, 95, 0.1);
+        }
+
+        /* Badges */
+        .badge {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .badge-primary {
+            background: rgba(0, 102, 95, 0.1);
+            color: #00665F;
+        }
+
+        .badge-success {
+            background: rgba(70, 157, 52, 0.1);
+            color: #469D34;
+        }
+
+        .badge-warning {
+            background: rgba(243, 175, 0, 0.1);
+            color: #F3AF00;
+        }
+
+        .badge-error {
+            background: rgba(240, 81, 81, 0.1);
+            color: #F05151;
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            background: #E5E6EB;
+            border-radius: 4px;
+            overflow: hidden;
+            height: 8px;
+        }
+
+        .progress-bar-fill {
+            background: #00665F;
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        /* Drawer */
+        .drawer {
+            position: fixed;
+            top: 48px;
+            right: 0;
+            width: 400px;
+            bottom: 0;
+            background: #FFFFFF;
+            border-left: 1px solid #E5E6EB;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            z-index: 80;
+            overflow-y: auto;
+        }
+
+        .drawer.open {
+            transform: translateX(0);
+        }
+
+        /* Views */
+        .view {
+            display: none;
+        }
+
+        .view.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Timeline */
+        .timeline-item {
+            position: relative;
+            padding-left: 24px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 6px;
+            top: 6px;
+            width: 8px;
+            height: 8px;
+            background: #00665F;
+            border-radius: 50%;
+        }
+
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: 9px;
+            top: 18px;
+            width: 2px;
+            height: calc(100% - 12px);
+            background: #E5E6EB;
+        }
+
+        .timeline-item:last-child::after {
+            display: none;
+        }
+
+        /* Tabs */
+        .tab-btn {
+            padding: 12px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #666666;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+            cursor: pointer;
+            background: none;
+            border-top: none;
+            border-left: none;
+            border-right: none;
+        }
+
+        .tab-btn:hover {
+            color: #00665F;
+        }
+
+        .tab-btn.active {
+            color: #00665F;
+            border-bottom-color: #00665F;
+            font-weight: 600;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            top: 64px;
+            right: 16px;
+            background: #00665F;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+            z-index: 200;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        /* Agent Widget */
+        .agent-orb {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 56px;
+            height: 56px;
+            background: #00665F;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 102, 95, 0.3);
+            transition: all 0.3s;
+            z-index: 100;
+        }
+
+        .agent-orb:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(0, 102, 95, 0.4);
+        }
+
+        /* Agent Chat */
+        .agent-chat {
+            position: fixed;
+            bottom: 88px;
+            right: 24px;
+            width: 360px;
+            background: #FFFFFF;
+            border: 1px solid #E5E6EB;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            z-index: 99;
+            display: none;
+            flex-direction: column;
+            max-height: 500px;
+        }
+
+        .agent-chat.open {
+            display: flex;
+        }
+
+        /* Role Dropdown */
+        .role-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 4px;
+            width: 120px;
+            background: #FFFFFF;
+            border: 1px solid #E5E6EB;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            display: none;
+            z-index: 110;
+        }
+
+        .role-dropdown.open {
+            display: block;
+        }
+
+        .role-option {
+            padding: 10px 16px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .role-option:hover {
+            background: #F5F7FA;
+        }
+
+        .role-option.active {
+            background: rgba(101, 164, 160, 0.12);
+            color: #00665F;
+            font-weight: 600;
+        }
+
+        /* Stats Card */
+        .stat-card {
+            background: #FFFFFF;
+            border: 1px solid #E5E6EB;
+            border-radius: 8px;
+            padding: 16px;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            border-color: #00665F;
+        }
+
+        .stat-value {
+            font-family: 'RobotoMono', monospace;
+            font-size: 28px;
+            font-weight: 500;
+            color: #0F0F0F;
+        }
+
+        /* Checkbox */
+        input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            border: 1px solid #E5E6EB;
+            border-radius: 4px;
+            accent-color: #00665F;
+            cursor: pointer;
+        }
+        /* Badge Styles */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .badge-success {
+            background: rgba(70, 157, 52, 0.1);
+            color: #469D34;
+        }
+
+        .badge-warning {
+            background: rgba(243, 175, 0, 0.1);
+            color: #F3AF00;
+        }
+
+        .badge-error {
+            background: rgba(240, 81, 81, 0.1);
+            color: #F05151;
+        }
+
+        .badge-primary {
+            background: rgba(0, 102, 95, 0.1);
+            color: #00665F;
+        }
+
+        .badge-secondary {
+            background: rgba(102, 102, 102, 0.1);
+            color: #666666;
+        }
+
+        .badge-info {
+            background: rgba(0, 112, 201, 0.1);
+            color: #0070C9;
+        }
+
+        /* Hidden utility */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Person Type Tree Styles */
+        .person-type-item {
+            transition: all 0.2s ease;
+        }
+
+        .person-type-item:hover {
+            border-color: #00665F;
+        }
+
+        /* Budget Tab Content */
+        .budget-tab-content {
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* Accounting Tab Content */
+        .accounting-tab-content {
+            animation: fadeIn 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="flex items-center justify-between w-full">
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded bg-white/10 flex items-center justify-center">
+                        <i data-lucide="hexagon" class="w-5 h-5 text-white"></i>
+                    </div>
+                    <h1 class="text-white text-lg font-semibold">多元化用工系统</h1>
+                    <span class="text-white/50 text-sm">V2.0</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="relative">
+                    <input type="text" placeholder="搜索功能、数据或指令..." class="input-field w-64 text-sm bg-white/10 border-white/20 text-white placeholder-white/50">
+                    <i data-lucide="search" class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/50"></i>
+                </div>
+                <button class="relative p-2 rounded hover:bg-white/10">
+                    <i data-lucide="bell" class="w-5 h-5 text-white"></i>
+                    <span class="absolute top-1 right-1 w-2 h-2 bg-error rounded-full"></span>
+                </button>
+                <div class="relative">
+                    <button onclick="toggleRoleDropdown()" class="flex items-center gap-2 px-3 py-1.5 rounded bg-white/10 hover:bg-white/20 transition-colors">
+                        <i data-lucide="user" class="w-4 h-4 text-white"></i>
+                        <span id="current-role-display" class="text-sm text-white font-medium">HRBP</span>
+                        <i data-lucide="chevron-down" class="w-3 h-3 text-white"></i>
+                    </button>
+                    <div id="role-dropdown" class="role-dropdown">
+                        <div class="role-option" data-role="TA" onclick="switchRole('TA')">TA</div>
+                        <div class="role-option active" data-role="HRBP" onclick="switchRole('HRBP')">HRBP</div>
+                        <div class="role-option" data-role="MGR" onclick="switchRole('MGR')">MGR</div>
+                        <div class="role-option" data-role="OWN" onclick="switchRole('OWN')">OWN</div>
+                        <div class="role-option" data-role="SUP" onclick="switchRole('SUP')">SUP</div>
+                        <div class="role-option" data-role="ADM" onclick="switchRole('ADM')">ADM</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <nav>
+            <div class="px-4 py-3">
+                <p class="text-xs text-text-tertiary uppercase tracking-wider">主菜单</p>
+            </div>
+            <div class="nav-item">
+                <a class="nav-link active" onclick="switchView('v1')" data-view="v1">
+                    <i data-lucide="home" class="nav-icon"></i>
+                    <span>Agent中枢</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a class="nav-link" onclick="switchView('v2')" data-view="v2">
+                    <i data-lucide="wallet" class="nav-icon"></i>
+                    <span>预算管理</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a class="nav-link" onclick="switchView('v3')" data-view="v3">
+                    <i data-lucide="briefcase" class="nav-icon"></i>
+                    <span>定岗定级</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a class="nav-link" onclick="switchView('v4')" data-view="v4">
+                    <i data-lucide="user-check" class="nav-icon"></i>
+                    <span>入场在场</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a class="nav-link" onclick="switchView('v5')" data-view="v5">
+                    <i data-lucide="log-out" class="nav-icon"></i>
+                    <span>离场续期</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a class="nav-link" onclick="switchView('v6')" data-view="v6">
+                    <i data-lucide="check-circle" class="nav-icon"></i>
+                    <span>审批中心</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a class="nav-link" onclick="switchView('v9')" data-view="v9">
+                    <i data-lucide="users" class="nav-icon"></i>
+                    <span>人员管理</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a class="nav-link" onclick="switchView('v10')" data-view="v10">
+                    <i data-lucide="calculator" class="nav-icon"></i>
+                    <span>核算管理</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a class="nav-link" onclick="switchView('v7')" data-view="v7">
+                    <i data-lucide="bar-chart-3" class="nav-icon"></i>
+                    <span>数据分析</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a class="nav-link" onclick="switchView('v8')" data-view="v8">
+                    <i data-lucide="settings" class="nav-icon"></i>
+                    <span>系统配置</span>
+                </a>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- V1 Agent中枢首页 -->
+        <div id="v1" class="view active">
+            <div class="mb-6">
+                <h2 class="text-2xl font-semibold text-text-primary mb-2">多元化用工智能中枢</h2>
+                <p class="text-text-secondary">基于AI Agent的全流程智能管理，让用工决策更高效</p>
+            </div>
+
+            <!-- 核心指标 -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                <div class="stat-card">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-text-secondary text-sm">预算执行率</span>
+                        <i data-lucide="trending-up" class="w-5 h-5 text-primary"></i>
+                    </div>
+                    <div class="stat-value mb-1">87.3%</div>
+                    <div class="text-success text-sm">+5.2% 较上月</div>
+                </div>
+                <div class="stat-card">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-text-secondary text-sm">在用HC总数</span>
+                        <i data-lucide="users" class="w-5 h-5 text-primary"></i>
+                    </div>
+                    <div class="stat-value mb-1">1,248</div>
+                    <div class="text-warning text-sm">32个即将到期</div>
+                </div>
+                <div class="stat-card">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-text-secondary text-sm">待审批事项</span>
+                        <i data-lucide="file-check" class="w-5 h-5 text-primary"></i>
+                    </div>
+                    <div class="stat-value mb-1">15</div>
+                    <div class="text-error text-sm">8个即将超时</div>
+                </div>
+                <div class="stat-card">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-text-secondary text-sm">供应商评分</span>
+                        <i data-lucide="star" class="w-5 h-5 text-primary"></i>
+                    </div>
+                    <div class="stat-value mb-1">4.6</div>
+                    <div class="text-primary text-sm">Top 10%</div>
+                </div>
+            </div>
+
+            <!-- Bento Grid快捷入口 -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div class="card card-hover cursor-pointer" onclick="switchView('v2')">
+                    <div class="w-10 h-10 rounded-lg bg-primary-bg flex items-center justify-center mb-4">
+                        <i data-lucide="wallet" class="w-5 h-5 text-primary"></i>
+                    </div>
+                    <h3 class="text-base font-semibold text-text-primary mb-2">预算管理驾驶舱</h3>
+                    <p class="text-text-secondary text-sm mb-4">预算编制、日常调整、预发布与正式发布</p>
+                    <div class="flex items-center gap-2 text-primary text-sm">
+                        <span>进入模块</span>
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </div>
+                </div>
+                <div class="card card-hover cursor-pointer" onclick="switchView('v3')">
+                    <div class="w-10 h-10 rounded-lg bg-primary-bg flex items-center justify-center mb-4">
+                        <i data-lucide="briefcase" class="w-5 h-5 text-primary"></i>
+                    </div>
+                    <h3 class="text-base font-semibold text-text-primary mb-2">定岗定级工作台</h3>
+                    <p class="text-text-secondary text-sm mb-4">通用定级、蓝领批量、海外定级全流程</p>
+                    <div class="flex items-center gap-2 text-primary text-sm">
+                        <span>进入模块</span>
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </div>
+                </div>
+                <div class="card card-hover cursor-pointer" onclick="switchView('v4')">
+                    <div class="w-10 h-10 rounded-lg bg-primary-bg flex items-center justify-center mb-4">
+                        <i data-lucide="user-check" class="w-5 h-5 text-primary"></i>
+                    </div>
+                    <h3 class="text-base font-semibold text-text-primary mb-2">入场与在场管理</h3>
+                    <p class="text-text-secondary text-sm mb-4">入场资料、权限开通、在场运营</p>
+                    <div class="flex items-center gap-2 text-primary text-sm">
+                        <span>进入模块</span>
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </div>
+                </div>
+                <div class="card card-hover cursor-pointer" onclick="switchView('v5')">
+                    <div class="w-10 h-10 rounded-lg bg-primary-bg flex items-center justify-center mb-4">
+                        <i data-lucide="log-out" class="w-5 h-5 text-primary"></i>
+                    </div>
+                    <h3 class="text-base font-semibold text-text-primary mb-2">离场与续期中心</h3>
+                    <p class="text-text-secondary text-sm mb-4">到期预警、续期申请、离场办理</p>
+                    <div class="flex items-center gap-2 text-primary text-sm">
+                        <span>进入模块</span>
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </div>
+                </div>
+                <div class="card card-hover cursor-pointer" onclick="switchView('v7')">
+                    <div class="w-10 h-10 rounded-lg bg-primary-bg flex items-center justify-center mb-4">
+                        <i data-lucide="bar-chart-3" class="w-5 h-5 text-primary"></i>
+                    </div>
+                    <h3 class="text-base font-semibold text-text-primary mb-2">数据分析大脑</h3>
+                    <p class="text-text-secondary text-sm mb-4">人效看板、成本分析、预算模拟</p>
+                    <div class="flex items-center gap-2 text-primary text-sm">
+                        <span>进入模块</span>
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </div>
+                </div>
+                <div class="card card-hover cursor-pointer" onclick="switchView('v6')">
+                    <div class="w-10 h-10 rounded-lg bg-primary-bg flex items-center justify-center mb-4">
+                        <i data-lucide="check-circle" class="w-5 h-5 text-primary"></i>
+                    </div>
+                    <h3 class="text-base font-semibold text-text-primary mb-2">审批与通知中心</h3>
+                    <p class="text-text-secondary text-sm mb-4">统一审批、批量处理、流程追踪</p>
+                    <div class="flex items-center gap-2 text-primary text-sm">
+                        <span>进入模块</span>
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 智能待办 -->
+            <div class="card">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-base font-semibold text-text-primary flex items-center gap-2">
+                        <i data-lucide="sparkles" class="w-5 h-5 text-primary"></i>
+                        智能待办
+                    </h3>
+                    <button class="text-primary text-sm hover:underline">查看全部</button>
+                </div>
+                <div class="space-y-3" id="todo-list">
+                    <div class="flex items-center justify-between p-4 rounded-lg bg-bg-hover border border-border">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-lg bg-error/10 flex items-center justify-center">
+                                <i data-lucide="alert-circle" class="w-5 h-5 text-error"></i>
+                            </div>
+                            <div>
+                                <p class="text-text-primary font-medium">3个预算活动待审批</p>
+                                <p class="text-text-secondary text-sm">研发中心 Q1 外包预算</p>
+                            </div>
+                        </div>
+                        <button class="btn btn-secondary text-sm" onclick="switchView('v6')">去审批</button>
+                    </div>
+                    <div class="flex items-center justify-between p-4 rounded-lg bg-bg-hover border border-border">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-lg bg-warning/10 flex items-center justify-center">
+                                <i data-lucide="clock" class="w-5 h-5 text-warning"></i>
+                            </div>
+                            <div>
+                                <p class="text-text-primary font-medium">5个HC将在7天内到期</p>
+                                <p class="text-text-secondary text-sm">建议及时发起续期或离场流程</p>
+                            </div>
+                        </div>
+                        <button class="btn btn-secondary text-sm" onclick="switchView('v5')">处理</button>
+                    </div>
+                    <div class="flex items-center justify-between p-4 rounded-lg bg-bg-hover border border-border">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-lg bg-info/10 flex items-center justify-center">
+                                <i data-lucide="user-plus" class="w-5 h-5 text-info"></i>
+                            </div>
+                            <div>
+                                <p class="text-text-primary font-medium">2个定级申请待价格确认</p>
+                                <p class="text-text-secondary text-sm">供应商已提交报价，等待确认</p>
+                            </div>
+                        </div>
+                        <button class="btn btn-secondary text-sm" onclick="switchView('v3')">去确认</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- V2 预算管理驾驶舱 -->
+        <div id="v2" class="view">
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h2 class="text-xl font-semibold text-text-primary">预算管理驾驶舱</h2>
+                    <p class="text-text-secondary text-sm mt-1">预算活动全生命周期管理</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <select class="input-field w-32 text-sm">
+                        <option>2025年度</option>
+                        <option>2024年度</option>
+                    </select>
+                    <select class="input-field w-32 text-sm">
+                        <option>全部状态</option>
+                        <option>编制中</option>
+                        <option>审批中</option>
+                        <option>已发布</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="openDrawer('budget-drawer')">
+                        <i data-lucide="plus" class="w-4 h-4"></i>
+                        新增预算
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                <div class="lg:col-span-2 space-y-4">
+                    <div class="card overflow-hidden">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>预算编号</th>
+                                    <th>预算名称</th>
+                                    <th>组织</th>
+                                    <th>总金额</th>
+                                    <th>已占用</th>
+                                    <th>状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr onclick="selectBudget(1)" class="cursor-pointer">
+                                    <td class="text-primary">BUD-2025-001</td>
+                                    <td>研发中心Q1外包预算</td>
+                                    <td>研发中心</td>
+                                    <td>¥2,000,000</td>
+                                    <td>
+                                        <div class="flex items-center gap-2">
+                                            <div class="progress-bar w-20">
+                                                <div class="progress-bar-fill" style="width: 75%"></div>
+                                            </div>
+                                            <span class="text-sm">75%</span>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge badge-success">已发布</span></td>
+                                    <td>
+                                        <button class="text-primary hover:text-primary-light">
+                                            <i data-lucide="more-horizontal" class="w-4 h-4"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr onclick="selectBudget(2)" class="cursor-pointer">
+                                    <td class="text-primary">BUD-2025-002</td>
+                                    <td>销售中心年度预算</td>
+                                    <td>销售中心</td>
+                                    <td>¥3,500,000</td>
+                                    <td>
+                                        <div class="flex items-center gap-2">
+                                            <div class="progress-bar w-20">
+                                                <div class="progress-bar-fill" style="width: 45%"></div>
+                                            </div>
+                                            <span class="text-sm">45%</span>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge badge-warning">审批中</span></td>
+                                    <td>
+                                        <button class="text-primary hover:text-primary-light">
+                                            <i data-lucide="more-horizontal" class="w-4 h-4"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr onclick="selectBudget(3)" class="cursor-pointer">
+                                    <td class="text-primary">BUD-2025-003</td>
+                                    <td>运营支持Q1预算</td>
+                                    <td>运营中心</td>
+                                    <td>¥800,000</td>
+                                    <td>
+                                        <div class="flex items-center gap-2">
+                                            <div class="progress-bar w-20">
+                                                <div class="progress-bar-fill" style="width: 0%"></div>
+                                            </div>
+                                            <span class="text-sm">0%</span>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge badge-primary">编制中</span></td>
+                                    <td>
+                                        <button class="text-primary hover:text-primary-light">
+                                            <i data-lucide="more-horizontal" class="w-4 h-4"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 class="text-base font-semibold text-text-primary mb-4">预算详情</h3>
+                    <div id="budget-detail" class="space-y-4">
+                        <div class="p-3 rounded-lg bg-bg-hover">
+                            <p class="text-text-secondary text-sm mb-1">当前选中</p>
+                            <p class="text-text-primary font-medium">研发中心Q1外包预算</p>
+                            <p class="text-primary text-sm">BUD-2025-001</p>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="p-3 rounded-lg bg-bg-hover">
+                                <p class="text-text-secondary text-sm">预算总额</p>
+                                <p class="text-lg font-semibold text-text-primary">¥200万</p>
+                            </div>
+                            <div class="p-3 rounded-lg bg-bg-hover">
+                                <p class="text-text-secondary text-sm">已占用</p>
+                                <p class="text-lg font-semibold text-primary">¥150万</p>
+                            </div>
+                        </div>
+                        <div class="p-3 rounded-lg bg-bg-hover">
+                            <p class="text-text-secondary text-sm mb-3">审批进度</p>
+                            <div class="space-y-3">
+                                <div class="timeline-item">
+                                    <p class="text-sm text-text-primary">预算编制</p>
+                                    <p class="text-xs text-text-secondary">2025-01-15 已完成</p>
+                                </div>
+                                <div class="timeline-item">
+                                    <p class="text-sm text-text-primary">部门负责人审批</p>
+                                    <p class="text-xs text-text-secondary">2025-01-18 已通过</p>
+                                </div>
+                                <div class="timeline-item">
+                                    <p class="text-sm text-text-primary">HRBP审核</p>
+                                    <p class="text-xs text-text-secondary">2025-01-20 已通过</p>
+                                </div>
+                                <div class="timeline-item">
+                                    <p class="text-sm text-primary">财务审核</p>
+                                    <p class="text-xs text-text-secondary">进行中</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4 space-y-2">
+                        <button class="btn btn-primary w-full" onclick="openDrawer('budget-fill-drawer')">
+                            <i data-lucide="edit-3" class="w-4 h-4"></i>
+                            填报入口
+                        </button>
+                        <button class="btn btn-secondary w-full">
+                            <i data-lucide="adjustments" class="w-4 h-4"></i>
+                            日常调整
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- V3 定岗定级工作台 -->
+        <div id="v3" class="view">
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h2 class="text-xl font-semibold text-text-primary">定岗定级工作台</h2>
+                    <p class="text-text-secondary text-sm mt-1">通用/批量/海外定级全流程管理</p>
+                </div>
+                <button class="btn btn-primary" onclick="openModal('position-modal')">
+                    <i data-lucide="plus" class="w-4 h-4"></i>
+                    发起定级
+                </button>
+            </div>
+
+            <div class="flex items-center gap-6 border-b border-border mb-6">
+                <button class="tab-btn active" onclick="switchTab(this, 'tab-general')">通用定级</button>
+                <button class="tab-btn" onclick="switchTab(this, 'tab-batch')">蓝领批量</button>
+                <button class="tab-btn" onclick="switchTab(this, 'tab-overseas')">海外定级</button>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                <div class="lg:col-span-2">
+                    <div class="card overflow-hidden">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>申请编号</th>
+                                    <th>姓名</th>
+                                    <th>岗位</th>
+                                    <th>级别</th>
+                                    <th>HC编码</th>
+                                    <th>状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="text-primary">POS-2025-0089</td>
+                                    <td>张三</td>
+                                    <td>高级Java工程师</td>
+                                    <td>P6</td>
+                                    <td>HC-RD-2025-0123</td>
+                                    <td><span class="badge badge-warning">价格确认</span></td>
+                                    <td>
+                                        <button class="text-primary hover:text-primary-light text-sm" onclick="openDrawer('price-confirm-drawer')">确认价格</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-primary">POS-2025-0090</td>
+                                    <td>李四</td>
+                                    <td>测试工程师</td>
+                                    <td>P5</td>
+                                    <td>HC-RD-2025-0124</td>
+                                    <td><span class="badge badge-primary">审批中</span></td>
+                                    <td>
+                                        <button class="text-text-tertiary text-sm cursor-not-allowed">查看</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-primary">POS-2025-0091</td>
+                                    <td>王五</td>
+                                    <td>产品经理</td>
+                                    <td>P7</td>
+                                    <td>HC-RD-2025-0125</td>
+                                    <td><span class="badge badge-success">已锁定</span></td>
+                                    <td>
+                                        <button class="text-primary hover:text-primary-light text-sm">查看详情</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 class="text-base font-semibold text-text-primary mb-4">价格比对</h3>
+                    <div class="space-y-4">
+                        <div class="p-3 rounded-lg bg-bg-hover border border-primary">
+                            <p class="text-text-secondary text-sm mb-2">当前申请</p>
+                            <p class="text-text-primary font-medium">高级Java工程师 - P6</p>
+                            <div class="mt-3 space-y-2">
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-text-secondary">供应商报价</span>
+                                    <span class="text-text-primary">¥28,000/月</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-text-secondary">预算上限</span>
+                                    <span class="text-text-primary">¥30,000/月</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-text-secondary">同岗均价</span>
+                                    <span class="text-primary">¥27,500/月</span>
+                                </div>
+                            </div>
+                            <div class="mt-3 p-2 rounded bg-success/10">
+                                <p class="text-success text-xs">✓ 价格在合理范围内</p>
+                            </div>
+                        </div>
+                        <div class="p-3 rounded-lg bg-bg-hover">
+                            <p class="text-text-secondary text-sm mb-2">审批流预览</p>
+                            <div class="space-y-2">
+                                <div class="flex items-center gap-2 text-sm">
+                                    <i data-lucide="check-circle" class="w-4 h-4 text-success"></i>
+                                    <span class="text-text-secondary">TA初审</span>
+                                </div>
+                                <div class="flex items-center gap-2 text-sm">
+                                    <i data-lucide="check-circle" class="w-4 h-4 text-success"></i>
+                                    <span class="text-text-secondary">HRBP审核</span>
+                                </div>
+                                <div class="flex items-center gap-2 text-sm">
+                                    <i data-lucide="circle" class="w-4 h-4 text-primary"></i>
+                                    <span class="text-primary">价格确认</span>
+                                </div>
+                                <div class="flex items-center gap-2 text-sm">
+                                    <i data-lucide="circle" class="w-4 h-4 text-text-tertiary"></i>
+                                    <span class="text-text-tertiary">用工责任人审批</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- V4 入场与在场管理 -->
+        <div id="v4" class="view">
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h2 class="text-xl font-semibold text-text-primary">入场与在场管理</h2>
+                    <p class="text-text-secondary text-sm mt-1">入场办理与在场运营一体化</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-6 border-b border-border mb-6">
+                <button class="tab-btn active" onclick="switchTab(this, 'tab-entry')">入场办理</button>
+                <button class="tab-btn" onclick="switchTab(this, 'tab-onsite')">在场运营</button>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                <div class="lg:col-span-2">
+                    <div class="card overflow-hidden">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>姓名</th>
+                                    <th>岗位</th>
+                                    <th>供应商</th>
+                                    <th>入场日期</th>
+                                    <th>资料状态</th>
+                                    <th>权限状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>张三</td>
+                                    <td>高级Java工程师</td>
+                                    <td>中软国际</td>
+                                    <td>2025-02-01</td>
+                                    <td><span class="badge badge-success">齐全</span></td>
+                                    <td>
+                                        <div class="flex items-center gap-1">
+                                            <div class="w-2 h-2 rounded-full bg-success"></div>
+                                            <span class="text-xs">已开通</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button class="text-primary hover:text-primary-light text-sm" onclick="openDrawer('entry-drawer')">办理入场</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>赵六</td>
+                                    <td>前端工程师</td>
+                                    <td>文思海辉</td>
+                                    <td>2025-02-05</td>
+                                    <td><span class="badge badge-warning">待补充</span></td>
+                                    <td>
+                                        <div class="flex items-center gap-1">
+                                            <div class="w-2 h-2 rounded-full bg-warning"></div>
+                                            <span class="text-xs">办理中</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button class="text-primary hover:text-primary-light text-sm">查看进度</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>孙七</td>
+                                    <td>运维工程师</td>
+                                    <td>软通动力</td>
+                                    <td>2025-02-10</td>
+                                    <td><span class="badge badge-primary">审核中</span></td>
+                                    <td>
+                                        <div class="flex items-center gap-1">
+                                            <div class="w-2 h-2 rounded-full bg-text-tertiary"></div>
+                                            <span class="text-xs">待开通</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button class="text-primary hover:text-primary-light text-sm">查看进度</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 class="text-base font-semibold text-text-primary mb-4">入场资料清单</h3>
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between p-3 rounded-lg bg-bg-hover">
+                            <div class="flex items-center gap-3">
+                                <i data-lucide="file-text" class="w-4 h-4 text-primary"></i>
+                                <span class="text-sm text-text-primary">身份证</span>
+                            </div>
+                            <i data-lucide="check" class="w-4 h-4 text-success"></i>
+                        </div>
+                        <div class="flex items-center justify-between p-3 rounded-lg bg-bg-hover">
+                            <div class="flex items-center gap-3">
+                                <i data-lucide="file-text" class="w-4 h-4 text-primary"></i>
+                                <span class="text-sm text-text-primary">学历证明</span>
+                            </div>
+                            <i data-lucide="check" class="w-4 h-4 text-success"></i>
+                        </div>
+                        <div class="flex items-center justify-between p-3 rounded-lg bg-bg-hover">
+                            <div class="flex items-center gap-3">
+                                <i data-lucide="file-text" class="w-4 h-4 text-primary"></i>
+                                <span class="text-sm text-text-primary">离职证明</span>
+                            </div>
+                            <i data-lucide="check" class="w-4 h-4 text-success"></i>
+                        </div>
+                        <div class="flex items-center justify-between p-3 rounded-lg bg-bg-hover border border-primary">
+                            <div class="flex items-center gap-3">
+                                <i data-lucide="shield" class="w-4 h-4 text-primary"></i>
+                                <span class="text-sm text-text-primary">背景调查</span>
+                            </div>
+                            <span class="text-xs text-primary">进行中</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 rounded-lg bg-bg-hover">
+                            <div class="flex items-center gap-3">
+                                <i data-lucide="key" class="w-4 h-4 text-primary"></i>
+                                <span class="text-sm text-text-primary">系统权限</span>
+                            </div>
+                            <i data-lucide="check" class="w-4 h-4 text-success"></i>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary w-full mt-4" onclick="showToast('验收通过，已发送通知')">
+                        <i data-lucide="check-circle" class="w-4 h-4"></i>
+                        验收通过
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- V5 离场与续期中心 -->
+        <div id="v5" class="view">
+            <div class="bg-warning/10 border border-warning/30 rounded-lg p-4 mb-6 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-warning/20 flex items-center justify-center">
+                        <i data-lucide="alert-triangle" class="w-5 h-5 text-warning"></i>
+                    </div>
+                    <div>
+                        <p class="text-text-primary font-medium">到期预警提醒</p>
+                        <p class="text-text-secondary text-sm">您有 <span class="text-warning font-bold">5</span> 个HC将在30天内到期，请及时处理</p>
+                    </div>
+                </div>
+                <button class="btn btn-secondary">查看全部</button>
+            </div>
+
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h2 class="text-xl font-semibold text-text-primary">离场与续期中心</h2>
+                    <p class="text-text-secondary text-sm mt-1">HC到期管理与离场流程办理</p>
+                </div>
+            </div>
+
+            <div class="card overflow-hidden mb-6">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>姓名</th>
+                            <th>岗位</th>
+                            <th>供应商</th>
+                            <th>到期日期</th>
+                            <th>剩余天数</th>
+                            <th>预算状态</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>张三</td>
+                            <td>高级Java工程师</td>
+                            <td>中软国际</td>
+                            <td>2025-02-15</td>
+                            <td><span class="text-error font-medium">7天</span></td>
+                            <td><span class="badge badge-success">预算充足</span></td>
+                            <td>
+                                <div class="flex items-center gap-2">
+                                    <button class="btn btn-primary text-xs py-1.5 px-3" onclick="openDrawer('renew-drawer')">续期</button>
+                                    <button class="btn btn-secondary text-xs py-1.5 px-3" onclick="openDrawer('exit-drawer')">离场</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>李四</td>
+                            <td>测试工程师</td>
+                            <td>文思海辉</td>
+                            <td>2025-02-20</td>
+                            <td><span class="text-warning font-medium">12天</span></td>
+                            <td><span class="badge badge-success">预算充足</span></td>
+                            <td>
+                                <div class="flex items-center gap-2">
+                                    <button class="btn btn-primary text-xs py-1.5 px-3">续期</button>
+                                    <button class="btn btn-secondary text-xs py-1.5 px-3">离场</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>王五</td>
+                            <td>产品经理</td>
+                            <td>软通动力</td>
+                            <td>2025-02-28</td>
+                            <td><span class="text-text-secondary font-medium">20天</span></td>
+                            <td><span class="badge badge-warning">预算待确认</span></td>
+                            <td>
+                                <div class="flex items-center gap-2">
+                                    <button class="btn btn-primary text-xs py-1.5 px-3">续期</button>
+                                    <button class="btn btn-secondary text-xs py-1.5 px-3">离场</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h3 class="text-base font-semibold text-text-primary mb-4">最近完成离场</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="p-4 rounded-lg bg-bg-hover border border-border">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-text-primary font-medium">赵六</span>
+                            <span class="badge badge-success">已完成</span>
+                        </div>
+                        <p class="text-text-secondary text-sm">前端工程师 · 文思海辉</p>
+                        <p class="text-text-tertiary text-xs mt-1">离场日期: 2025-01-28</p>
+                    </div>
+                    <div class="p-4 rounded-lg bg-bg-hover border border-border">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-text-primary font-medium">孙七</span>
+                            <span class="badge badge-success">已完成</span>
+                        </div>
+                        <p class="text-text-secondary text-sm">运维工程师 · 软通动力</p>
+                        <p class="text-text-tertiary text-xs mt-1">离场日期: 2025-01-25</p>
+                    </div>
+                    <div class="p-4 rounded-lg bg-bg-hover border border-border">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-text-primary font-medium">周八</span>
+                            <span class="badge badge-success">已完成</span>
+                        </div>
+                        <p class="text-text-secondary text-sm">UI设计师 · 中软国际</p>
+                        <p class="text-text-tertiary text-xs mt-1">离场日期: 2025-01-20</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- V6 审批与通知中心 -->
+        <div id="v6" class="view">
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h2 class="text-xl font-semibold text-text-primary">审批与通知中心</h2>
+                    <p class="text-text-secondary text-sm mt-1">统一审批工作台，批量处理更高效</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button class="btn btn-primary" id="batch-approve-btn" style="display:none;" onclick="batchApprove()">
+                        <i data-lucide="check" class="w-4 h-4"></i>
+                        批量通过
+                    </button>
+                    <button class="btn btn-secondary text-error border-error" id="batch-reject-btn" style="display:none;" onclick="batchReject()">
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                        批量驳回
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
+                <div class="lg:col-span-1">
+                    <div class="card">
+                        <div class="p-3 border-b border-border">
+                            <button class="w-full text-left py-2 px-3 rounded-lg bg-primary-bg text-primary font-medium">待我审批</button>
+                        </div>
+                        <div class="p-3 border-b border-border">
+                            <button class="w-full text-left py-2 px-3 rounded-lg text-text-secondary hover:bg-bg-hover">我已审批</button>
+                        </div>
+                        <div class="p-3 border-b border-border">
+                            <button class="w-full text-left py-2 px-3 rounded-lg text-text-secondary hover:bg-bg-hover">抄送我的</button>
+                        </div>
+                        <div class="p-3">
+                            <p class="text-text-tertiary text-xs mb-3">快速筛选</p>
+                            <div class="space-y-2">
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="checkbox">
+                                    <span class="text-sm text-text-secondary">预算审批</span>
+                                </label>
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="checkbox">
+                                    <span class="text-sm text-text-secondary">定级审批</span>
+                                </label>
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="checkbox">
+                                    <span class="text-sm text-text-secondary">续期审批</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-3">
+                    <div class="card overflow-hidden">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th><input type="checkbox" id="select-all" onchange="toggleSelectAll()"></th>
+                                    <th>审批类型</th>
+                                    <th>标题</th>
+                                    <th>申请人</th>
+                                    <th>提交时间</th>
+                                    <th>当前节点</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><input type="checkbox" class="row-checkbox" onchange="updateBatchButtons()"></td>
+                                    <td><span class="badge badge-primary">预算</span></td>
+                                    <td class="text-text-primary">研发中心Q1外包预算</td>
+                                    <td>张经理</td>
+                                    <td class="text-text-secondary">2025-01-20</td>
+                                    <td><span class="text-primary">财务审核</span></td>
+                                    <td>
+                                        <button class="text-primary hover:text-primary-light text-sm" onclick="openDrawer('approval-drawer')">审批</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><input type="checkbox" class="row-checkbox" onchange="updateBatchButtons()"></td>
+                                    <td><span class="badge badge-warning">定级</span></td>
+                                    <td class="text-text-primary">高级Java工程师定级-P6</td>
+                                    <td>李HRBP</td>
+                                    <td class="text-text-secondary">2025-01-19</td>
+                                    <td><span class="text-primary">价格确认</span></td>
+                                    <td>
+                                        <button class="text-primary hover:text-primary-light text-sm">审批</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><input type="checkbox" class="row-checkbox" onchange="updateBatchButtons()"></td>
+                                    <td><span class="badge badge-success">续期</span></td>
+                                    <td class="text-text-primary">张三HC续期申请</td>
+                                    <td>王主管</td>
+                                    <td class="text-text-secondary">2025-01-18</td>
+                                    <td><span class="text-primary">部门负责人审批</span></td>
+                                    <td>
+                                        <button class="text-primary hover:text-primary-light text-sm">审批</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- V7 数据分析大脑 -->
+        <div id="v7" class="view">
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h2 class="text-xl font-semibold text-text-primary">数据分析大脑</h2>
+                    <p class="text-text-secondary text-sm mt-1">人效、成本、风险全方位洞察</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <select class="input-field w-32 text-sm">
+                        <option>2025年度</option>
+                        <option>2024年度</option>
+                    </select>
+                    <select class="input-field w-32 text-sm">
+                        <option>全公司</option>
+                        <option>研发中心</option>
+                        <option>销售中心</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                <div class="stat-card cursor-pointer" onclick="showKPIDetail('output')">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-text-secondary text-sm">人均产出比</span>
+                        <i data-lucide="trending-up" class="w-5 h-5 text-primary"></i>
+                    </div>
+                    <div class="stat-value mb-1">1.35</div>
+                    <div class="text-success text-sm">优于目标 12%</div>
+                </div>
+                <div class="stat-card cursor-pointer" onclick="showKPIDetail('cost')">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-text-secondary text-sm">外包成本占比</span>
+                        <i data-lucide="pie-chart" class="w-5 h-5 text-primary"></i>
+                    </div>
+                    <div class="stat-value mb-1">23.5%</div>
+                    <div class="text-primary text-sm">同比下降 2.3%</div>
+                </div>
+                <div class="stat-card cursor-pointer" onclick="showKPIDetail('redundancy')">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-text-secondary text-sm">冗余HC数</span>
+                        <i data-lucide="alert-circle" class="w-5 h-5 text-error"></i>
+                    </div>
+                    <div class="stat-value mb-1">18</div>
+                    <div class="text-error text-sm">需重点关注</div>
+                </div>
+                <div class="stat-card cursor-pointer" onclick="showKPIDetail('supplier')">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-text-secondary text-sm">供应商风险集中度</span>
+                        <i data-lucide="shield" class="w-5 h-5 text-primary"></i>
+                    </div>
+                    <div class="stat-value mb-1">42%</div>
+                    <div class="text-primary text-sm">处于安全区间</div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+                <div class="card">
+                    <h3 class="text-base font-semibold text-text-primary mb-4">多元用工成本趋势</h3>
+                    <div id="cost-trend-chart" style="height: 280px;"></div>
+                </div>
+                <div class="card">
+                    <h3 class="text-base font-semibold text-text-primary mb-4">部门外包占比分析</h3>
+                    <div id="dept-chart" style="height: 280px;"></div>
+                </div>
+            </div>
+
+            <div class="card mb-6">
+                <h3 class="text-base font-semibold text-text-primary mb-4 flex items-center gap-2">
+                    <i data-lucide="calculator" class="w-5 h-5 text-primary"></i>
+                    预算模拟器
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div>
+                        <label class="text-text-secondary text-sm mb-2 block">HC数量调整</label>
+                        <input type="range" min="-50" max="50" value="0" class="w-full" oninput="updateSimulation(this.value)">
+                        <div class="flex justify-between text-xs text-text-tertiary mt-1">
+                            <span>-50%</span>
+                            <span id="hc-change">0%</span>
+                            <span>+50%</span>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="text-text-secondary text-sm mb-2 block">单HC月均成本</label>
+                        <div class="flex items-center gap-2">
+                            <span class="text-text-primary">¥</span>
+                            <input type="number" value="25000" class="input-field w-32" onchange="updateSimulation(document.querySelector('input[type=range]').value)">
+                        </div>
+                    </div>
+                    <div class="p-4 rounded-lg bg-primary-bg border border-primary">
+                        <p class="text-text-secondary text-sm mb-1">预算影响预测</p>
+                        <p class="text-2xl font-semibold text-primary font-mono" id="budget-impact">¥0</p>
+                        <p class="text-xs text-text-tertiary mt-1">按当前1,248个HC计算</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card bg-primary-bg border-primary">
+                <h3 class="text-base font-semibold text-text-primary mb-4 flex items-center gap-2">
+                    <i data-lucide="sparkles" class="w-5 h-5 text-primary"></i>
+                    Agent智能洞察
+                </h3>
+                <div class="space-y-3">
+                    <div class="flex items-start gap-3">
+                        <div class="w-6 h-6 rounded-full bg-primary flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <span class="text-white text-xs">1</span>
+                        </div>
+                        <p class="text-text-primary">研发中心外包成本占比（35%）高于公司平均水平，建议优化人员结构或推进核心岗位正式化</p>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <div class="w-6 h-6 rounded-full bg-primary flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <span class="text-white text-xs">2</span>
+                        </div>
+                        <p class="text-text-primary">中软国际供应商集中度达42%，建议引入备选供应商降低风险</p>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <div class="w-6 h-6 rounded-full bg-primary flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <span class="text-white text-xs">3</span>
+                        </div>
+                        <p class="text-text-primary">Q1预算执行率87%，预计全年略有结余，可考虑追加15个核心岗位HC</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- V8 系统配置后台 -->
+        <div id="v8" class="view">
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h2 class="text-xl font-semibold text-text-primary">系统配置后台</h2>
+                    <p class="text-text-secondary text-sm mt-1">数据初始化、权限与审批流配置</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
+                <div class="lg:col-span-1">
+                    <div class="card">
+                        <div class="p-3 border-b border-border">
+                            <button class="w-full text-left py-2 px-3 rounded-lg bg-primary-bg text-primary font-medium flex items-center gap-2">
+                                <i data-lucide="users" class="w-4 h-4"></i>
+                                权限矩阵
+                            </button>
+                        </div>
+                        <div class="p-3 border-b border-border">
+                            <button class="w-full text-left py-2 px-3 rounded-lg text-text-secondary hover:bg-bg-hover flex items-center gap-2">
+                                <i data-lucide="git-branch" class="w-4 h-4"></i>
+                                审批流配置
+                            </button>
+                        </div>
+                        <div class="p-3 border-b border-border">
+                            <button class="w-full text-left py-2 px-3 rounded-lg text-text-secondary hover:bg-bg-hover flex items-center gap-2">
+                                <i data-lucide="database" class="w-4 h-4"></i>
+                                基础数据
+                            </button>
+                        </div>
+                        <div class="p-3 border-b border-border">
+                            <button class="w-full text-left py-2 px-3 rounded-lg text-text-secondary hover:bg-bg-hover flex items-center gap-2">
+                                <i data-lucide="settings" class="w-4 h-4"></i>
+                                业务规则
+                            </button>
+                        </div>
+                        <div class="p-3">
+                            <button class="w-full text-left py-2 px-3 rounded-lg text-text-secondary hover:bg-bg-hover flex items-center gap-2">
+                                <i data-lucide="history" class="w-4 h-4"></i>
+                                版本管理
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-3">
+                    <div class="card overflow-hidden">
+                        <div class="p-4 border-b border-border flex items-center justify-between">
+                            <h3 class="text-base font-semibold text-text-primary">角色权限矩阵</h3>
+                            <button class="btn btn-primary text-sm" onclick="showToast('权限配置已保存')">
+                                <i data-lucide="save" class="w-4 h-4"></i>
+                                保存配置
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>功能模块</th>
+                                        <th>TA</th>
+                                        <th>HRBP</th>
+                                        <th>MGR</th>
+                                        <th>OWN</th>
+                                        <th>SUP</th>
+                                        <th>ADM</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="text-text-primary">预算编制</td>
+                                        <td><input type="checkbox" checked></td>
+                                        <td><input type="checkbox" checked></td>
+                                        <td><input type="checkbox"></td>
+                                        <td><input type="checkbox"></td>
+                                        <td><input type="checkbox"></td>
+                                        <td><input type="checkbox" checked></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-text-primary">预算审批</td>
+                                        <td><input type="checkbox"></td>
+                                        <td><input type="checkbox" checked></td>
+                                        <td><input type="checkbox" checked></td>
+                                        <td><input type="checkbox"></td>
+                                        <td><input type="checkbox"></td>
+                                        <td><input type="checkbox" checked></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-text-primary">定级发起</td>
+                                        <td><input type="checkbox" checked></td>
+                                        <td><input type="checkbox" checked></td>
+                                        <td><input type="checkbox"></td>
+                                        <td><input type="checkbox"></td>
+                                        <td><input type="checkbox"></td>
+                                        <td><input type="checkbox" checked></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-text-primary">价格确认</td>
+                                        <td><input type="checkbox"></td>
+                                        <td><input type="checkbox" checked></td>
+                                        <td><input type="checkbox"></td>
+                                        <td><input type="checkbox" checked></td>
+                                        <td><input type="checkbox" checked></td>
+                                        <td><input type="checkbox" checked></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-text-primary">入场审批</td>
+                                        <td><input type="checkbox"></td>
+                                        <td><input type="checkbox" checked></td>
+                                        <td><input type="checkbox" checked></td>
+                                        <td><input type="checkbox"></td>
+                                        <td><input type="checkbox"></td>
+                                        <td><input type="checkbox" checked></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-text-primary">数据导出</td>
+                                        <td><input type="checkbox"></td>
+                                        <td><input type="checkbox" checked></td>
+                                        <td><input type="checkbox"></td>
+                                        <td><input type="checkbox" checked></td>
+                                        <td><input type="checkbox"></td>
+                                        <td><input type="checkbox" checked></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="card mt-4">
+                        <div class="p-4 border-b border-border">
+                            <h3 class="text-base font-semibold text-text-primary">预算审批流配置</h3>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center justify-center gap-4">
+                                <div class="flex flex-col items-center">
+                                    <div class="w-14 h-14 rounded-full bg-primary-bg border-2 border-primary flex items-center justify-center">
+                                        <i data-lucide="user" class="w-5 h-5 text-primary"></i>
+                                    </div>
+                                    <span class="text-sm text-text-primary mt-2">申请人</span>
+                                </div>
+                                <div class="w-10 h-0.5 bg-border"></div>
+                                <div class="flex flex-col items-center">
+                                    <div class="w-14 h-14 rounded-full bg-primary-bg border-2 border-primary flex items-center justify-center">
+                                        <i data-lucide="user-check" class="w-5 h-5 text-primary"></i>
+                                    </div>
+                                    <span class="text-sm text-text-primary mt-2">TA初审</span>
+                                </div>
+                                <div class="w-10 h-0.5 bg-border"></div>
+                                <div class="flex flex-col items-center">
+                                    <div class="w-14 h-14 rounded-full bg-primary-bg border-2 border-primary flex items-center justify-center">
+                                        <i data-lucide="users" class="w-5 h-5 text-primary"></i>
+                                    </div>
+                                    <span class="text-sm text-text-primary mt-2">HRBP</span>
+                                </div>
+                                <div class="w-10 h-0.5 bg-border"></div>
+                                <div class="flex flex-col items-center">
+                                    <div class="w-14 h-14 rounded-full bg-primary-bg border-2 border-primary flex items-center justify-center">
+                                        <i data-lucide="building" class="w-5 h-5 text-primary"></i>
+                                    </div>
+                                    <span class="text-sm text-text-primary mt-2">部门负责人</span>
+                                </div>
+                                <div class="w-10 h-0.5 bg-border"></div>
+                                <div class="flex flex-col items-center">
+                                    <div class="w-14 h-14 rounded-full bg-primary-bg border-2 border-primary flex items-center justify-center">
+                                        <i data-lucide="dollar-sign" class="w-5 h-5 text-primary"></i>
+                                    </div>
+                                    <span class="text-sm text-text-primary mt-2">财务审核</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- V9 人员管理 -->
+        <div id="v9" class="view">
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h2 class="text-xl font-semibold text-text-primary">多元化用工人员管理</h2>
+                    <p class="text-text-secondary text-sm mt-1">人员主数据、分类管理、详情查看</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button class="btn btn-secondary" onclick="exportPersonnel()">
+                        <i data-lucide="download" class="w-4 h-4"></i>
+                        导出
+                    </button>
+                    <button class="btn btn-secondary" onclick="importPersonnel()">
+                        <i data-lucide="upload" class="w-4 h-4"></i>
+                        批量导入
+                    </button>
+                    <button class="btn btn-primary" onclick="openDrawer('person-add-drawer')">
+                        <i data-lucide="plus" class="w-4 h-4"></i>
+                        新增人员
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
+                <!-- Left: Person Type Tree -->
+                <div class="space-y-4">
+                    <div class="card">
+                        <div class="p-4 border-b border-border">
+                            <h3 class="text-base font-semibold text-text-primary">人员分类</h3>
+                        </div>
+                        <div class="p-4">
+                            <div class="space-y-2" id="personnel-type-tree">
+                                <div class="person-type-item active p-3 rounded-lg cursor-pointer bg-primary-bg border border-primary" onclick="selectPersonnelType(this, 'all')">
+                                    <div class="flex items-center justify-between">
+                                        <span class="font-medium">全部人员</span>
+                                        <span class="text-sm text-text-secondary">1,248</span>
+                                    </div>
+                                </div>
+                                <div class="person-type-item p-3 rounded-lg cursor-pointer hover:bg-bg-hover border border-transparent" onclick="selectPersonnelType(this, 'OS-A')">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <span class="font-medium">OS-A</span>
+                                            <p class="text-xs text-text-secondary">技术外包人员</p>
+                                        </div>
+                                        <span class="text-sm text-text-secondary">486</span>
+                                    </div>
+                                </div>
+                                <div class="person-type-item p-3 rounded-lg cursor-pointer hover:bg-bg-hover border border-transparent" onclick="selectPersonnelType(this, 'OS-B')">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <span class="font-medium">OS-B</span>
+                                            <p class="text-xs text-text-secondary">职能外包人员</p>
+                                        </div>
+                                        <span class="text-sm text-text-secondary">312</span>
+                                    </div>
+                                </div>
+                                <div class="person-type-item p-3 rounded-lg cursor-pointer hover:bg-bg-hover border border-transparent" onclick="selectPersonnelType(this, 'OS-C')">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <span class="font-medium">OS-C</span>
+                                            <p class="text-xs text-text-secondary">操作外包人员</p>
+                                        </div>
+                                        <span class="text-sm text-text-secondary">320</span>
+                                    </div>
+                                </div>
+                                <div class="person-type-item p-3 rounded-lg cursor-pointer hover:bg-bg-hover border border-transparent" onclick="selectPersonnelType(this, 'OS-P')">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <span class="font-medium">OS-P</span>
+                                            <p class="text-xs text-text-secondary">项目外包人员</p>
+                                        </div>
+                                        <span class="text-sm text-text-secondary">130</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stats Card -->
+                    <div class="card">
+                        <div class="p-4 border-b border-border">
+                            <h3 class="text-base font-semibold text-text-primary">人员统计</h3>
+                        </div>
+                        <div class="p-4 space-y-3">
+                            <div class="flex justify-between items-center">
+                                <span class="text-text-secondary">在职人数</span>
+                                <span class="font-semibold text-success">1,186</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-text-secondary">待入场</span>
+                                <span class="font-semibold text-warning">42</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-text-secondary">离场办理中</span>
+                                <span class="font-semibold text-error">20</span>
+                            </div>
+                            <div class="h-px bg-border my-2"></div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-text-secondary">本月到期</span>
+                                <span class="font-semibold text-warning">35</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Middle: Personnel List -->
+                <div class="lg:col-span-2 space-y-4">
+                    <div class="card overflow-hidden">
+                        <div class="p-4 border-b border-border flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <input type="text" placeholder="搜索姓名、工号、部门..." class="input-field w-64 text-sm">
+                                <select class="input-field w-32 text-sm">
+                                    <option>全部状态</option>
+                                    <option>在职</option>
+                                    <option>待入场</option>
+                                    <option>已离场</option>
+                                </select>
+                            </div>
+                        </div>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>工号</th>
+                                    <th>姓名</th>
+                                    <th>人员分类</th>
+                                    <th>部门</th>
+                                    <th>岗位</th>
+                                    <th>职级</th>
+                                    <th>状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="personnel-table">
+                                <tr onclick="showPersonDetail('OS2024001')" class="cursor-pointer">
+                                    <td class="text-primary">OS2024001</td>
+                                    <td class="font-medium">张三</td>
+                                    <td><span class="badge badge-primary">OS-A</span></td>
+                                    <td>研发中心</td>
+                                    <td>高级Java工程师</td>
+                                    <td>P6</td>
+                                    <td><span class="badge badge-success">在职</span></td>
+                                    <td>
+                                        <button class="btn btn-secondary text-sm" onclick="event.stopPropagation();convertPersonType('OS2024001')">转分类</button>
+                                    </td>
+                                </tr>
+                                <tr onclick="showPersonDetail('OS2024002')" class="cursor-pointer">
+                                    <td class="text-primary">OS2024002</td>
+                                    <td class="font-medium">李四</td>
+                                    <td><span class="badge badge-primary">OS-A</span></td>
+                                    <td>研发中心</td>
+                                    <td>前端工程师</td>
+                                    <td>P5</td>
+                                    <td><span class="badge badge-success">在职</span></td>
+                                    <td>
+                                        <button class="btn btn-secondary text-sm" onclick="event.stopPropagation();convertPersonType('OS2024002')">转分类</button>
+                                    </td>
+                                </tr>
+                                <tr onclick="showPersonDetail('OS2024003')" class="cursor-pointer">
+                                    <td class="text-primary">OS2024003</td>
+                                    <td class="font-medium">王五</td>
+                                    <td><span class="badge badge-warning">OS-B</span></td>
+                                    <td>人力资源部</td>
+                                    <td>HR专员</td>
+                                    <td>P4</td>
+                                    <td><span class="badge badge-warning">即将到期</span></td>
+                                    <td>
+                                        <button class="btn btn-secondary text-sm" onclick="event.stopPropagation();convertPersonType('OS2024003')">转分类</button>
+                                    </td>
+                                </tr>
+                                <tr onclick="showPersonDetail('OS2024004')" class="cursor-pointer">
+                                    <td class="text-primary">OS2024004</td>
+                                    <td class="font-medium">赵六</td>
+                                    <td><span class="badge badge-secondary">OS-C</span></td>
+                                    <td>制造中心</td>
+                                    <td>操作工</td>
+                                    <td>O3</td>
+                                    <td><span class="badge badge-success">在职</span></td>
+                                    <td>
+                                        <button class="btn btn-secondary text-sm" onclick="event.stopPropagation();convertPersonType('OS2024004')">转分类</button>
+                                    </td>
+                                </tr>
+                                <tr onclick="showPersonDetail('OS2024005')" class="cursor-pointer">
+                                    <td class="text-primary">OS2024005</td>
+                                    <td class="font-medium">钱七</td>
+                                    <td><span class="badge badge-info">OS-P</span></td>
+                                    <td>项目部</td>
+                                    <td>项目经理</td>
+                                    <td>P6</td>
+                                    <td><span class="badge badge-success">在职</span></td>
+                                    <td>
+                                        <button class="btn btn-secondary text-sm" onclick="event.stopPropagation();convertPersonType('OS2024005')">转分类</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Right: Detail Panel -->
+                <div class="space-y-4">
+                    <div class="card" id="person-detail-panel">
+                        <div class="p-4 border-b border-border flex items-center justify-between">
+                            <h3 class="text-base font-semibold text-text-primary">人员详情</h3>
+                            <button class="text-text-secondary hover:text-text-primary">
+                                <i data-lucide="edit" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                        <div class="p-4 space-y-4">
+                            <!-- Basic Info -->
+                            <div class="flex items-center gap-4 pb-4 border-b border-border">
+                                <div class="w-16 h-16 rounded-full bg-primary flex items-center justify-center text-white text-2xl font-medium">张</div>
+                                <div>
+                                    <h4 class="text-lg font-semibold text-text-primary">张三</h4>
+                                    <p class="text-sm text-text-secondary">OS-A 技术外包人员</p>
+                                    <p class="text-sm text-primary">工号: OS2024001</p>
+                                </div>
+                            </div>
+
+                            <!-- Work Info -->
+                            <div class="space-y-3">
+                                <h5 class="font-medium text-text-primary flex items-center gap-2">
+                                    <i data-lucide="briefcase" class="w-4 h-4 text-primary"></i>
+                                    工作信息
+                                </h5>
+                                <div class="grid grid-cols-2 gap-3 text-sm">
+                                    <div>
+                                        <span class="text-text-secondary">部门</span>
+                                        <p class="font-medium">研发中心 / 平台研发部</p>
+                                    </div>
+                                    <div>
+                                        <span class="text-text-secondary">岗位</span>
+                                        <p class="font-medium">高级Java工程师</p>
+                                    </div>
+                                    <div>
+                                        <span class="text-text-secondary">职级</span>
+                                        <p class="font-medium">P6</p>
+                                    </div>
+                                    <div>
+                                        <span class="text-text-secondary">员工组</span>
+                                        <p class="font-medium">外包A类</p>
+                                    </div>
+                                    <div>
+                                        <span class="text-text-secondary">上级</span>
+                                        <p class="font-medium">李经理</p>
+                                    </div>
+                                    <div>
+                                        <span class="text-text-secondary">入职日期</span>
+                                        <p class="font-medium">2024-03-01</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Contract Info -->
+                            <div class="space-y-3 pt-4 border-t border-border">
+                                <h5 class="font-medium text-text-primary flex items-center gap-2">
+                                    <i data-lucide="file-text" class="w-4 h-4 text-primary"></i>
+                                    合同信息
+                                </h5>
+                                <div class="grid grid-cols-1 gap-3 text-sm">
+                                    <div>
+                                        <span class="text-text-secondary">合同编号</span>
+                                        <p class="font-medium">CONT-2024-001</p>
+                                    </div>
+                                    <div>
+                                        <span class="text-text-secondary">合同类型</span>
+                                        <p class="font-medium">固定期限合同</p>
+                                    </div>
+                                    <div>
+                                        <span class="text-text-secondary">合同期限</span>
+                                        <p class="font-medium">2024-03-01 至 2025-02-28</p>
+                                        <p class="text-sm text-warning">剩余 28 天</p>
+                                    </div>
+                                    <div>
+                                        <span class="text-text-secondary">合同状态</span>
+                                        <p class="font-medium"><span class="badge badge-success">有效</span></p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Contact Info -->
+                            <div class="space-y-3 pt-4 border-t border-border">
+                                <h5 class="font-medium text-text-primary flex items-center gap-2">
+                                    <i data-lucide="phone" class="w-4 h-4 text-primary"></i>
+                                    联系方式
+                                </h5>
+                                <div class="grid grid-cols-1 gap-3 text-sm">
+                                    <div>
+                                        <span class="text-text-secondary">手机号码</span>
+                                        <p class="font-medium">138****1234</p>
+                                    </div>
+                                    <div>
+                                        <span class="text-text-secondary">公司邮箱</span>
+                                        <p class="font-medium">zhangsan@li.auto</p>
+                                    </div>
+                                    <div>
+                                        <span class="text-text-secondary">个人邮箱</span>
+                                        <p class="font-medium">zhangsan@email.com</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Bank Info -->
+                            <div class="space-y-3 pt-4 border-t border-border">
+                                <h5 class="font-medium text-text-primary flex items-center gap-2">
+                                    <i data-lucide="credit-card" class="w-4 h-4 text-primary"></i>
+                                    银行信息
+                                </h5>
+                                <div class="grid grid-cols-1 gap-3 text-sm">
+                                    <div>
+                                        <span class="text-text-secondary">开户银行</span>
+                                        <p class="font-medium">中国工商银行</p>
+                                    </div>
+                                    <div>
+                                        <span class="text-text-secondary">银行账号</span>
+                                        <p class="font-medium">6222****1234</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-4 border-t border-border space-y-2">
+                            <button class="btn btn-primary w-full" onclick="showToast('已打开发起续期流程')">
+                                <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                                发起续期
+                            </button>
+                            <button class="btn btn-secondary w-full text-error" onclick="showToast('已打开发起离场流程')">
+                                <i data-lucide="log-out" class="w-4 h-4"></i>
+                                发起离场
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- V10 核算管理 -->
+        <div id="v10" class="view">
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h2 class="text-xl font-semibold text-text-primary">核算管理中心</h2>
+                    <p class="text-text-secondary text-sm mt-1">工资核算、预提管理、账单结算</p>
+                </div>
+            </div>
+
+            <!-- Function Tabs -->
+            <div class="flex items-center gap-6 border-b border-border mb-6">
+                <button class="tab-btn active" onclick="switchAccountingTab(this, 'salary-calc')">工资核算</button>
+                <button class="tab-btn" onclick="switchAccountingTab(this, 'accrual-mgmt')">预提管理</button>
+                <button class="tab-btn" onclick="switchAccountingTab(this, 'bill-settlement')">账单结算</button>
+            </div>
+
+            <!-- Salary Calculation Tab -->
+            <div id="salary-calc" class="accounting-tab-content">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center gap-3">
+                        <select class="input-field w-32 text-sm">
+                            <option>2025-03</option>
+                            <option>2025-02</option>
+                            <option>2025-01</option>
+                        </select>
+                        <select class="input-field w-32 text-sm">
+                            <option>全部类型</option>
+                            <option>OS-A</option>
+                            <option>OS-B</option>
+                            <option>OS-C</option>
+                            <option>OS-P</option>
+                        </select>
+                        <select class="input-field w-32 text-sm">
+                            <option>全部状态</option>
+                            <option>草稿</option>
+                            <option>已确认</option>
+                            <option>已审批</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button class="btn btn-secondary" onclick="importSalaryData()">
+                            <i data-lucide="upload" class="w-4 h-4"></i>
+                            导入数据
+                        </button>
+                        <button class="btn btn-secondary" onclick="exportSalaryData()">
+                            <i data-lucide="download" class="w-4 h-4"></i>
+                            导出
+                        </button>
+                        <button class="btn btn-primary" onclick="batchConfirmSalary()">
+                            <i data-lucide="check" class="w-4 h-4"></i>
+                            批量确认
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-6">
+                    <div class="card p-4">
+                        <p class="text-text-secondary text-sm">核算总人数</p>
+                        <p class="text-2xl font-semibold text-text-primary">1,186</p>
+                        <p class="text-sm text-success mt-1">↑ 12 较上月</p>
+                    </div>
+                    <div class="card p-4">
+                        <p class="text-text-secondary text-sm">应发金额合计</p>
+                        <p class="text-2xl font-semibold text-primary">¥2,845万</p>
+                        <p class="text-sm text-text-secondary mt-1">人均 ¥2.4万</p>
+                    </div>
+                    <div class="card p-4">
+                        <p class="text-text-secondary text-sm">应扣金额合计</p>
+                        <p class="text-2xl font-semibold text-warning">¥285万</p>
+                        <p class="text-sm text-text-secondary mt-1">代扣个税/社保</p>
+                    </div>
+                    <div class="card p-4">
+                        <p class="text-text-secondary text-sm">实发金额合计</p>
+                        <p class="text-2xl font-semibold text-success">¥2,560万</p>
+                        <p class="text-sm text-text-secondary mt-1">待审批</p>
+                    </div>
+                </div>
+
+                <div class="card overflow-hidden">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" id="select-all-salary" onclick="toggleSelectAllSalary()"></th>
+                                <th>核算期间</th>
+                                <th>人员</th>
+                                <th>人员分类</th>
+                                <th>应发金额</th>
+                                <th>应扣金额</th>
+                                <th>调整金额</th>
+                                <th>实发金额</th>
+                                <th>状态</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><input type="checkbox" class="salary-checkbox"></td>
+                                <td>2025-03</td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white text-sm">张</div>
+                                        <div>
+                                            <p class="font-medium">张三</p>
+                                            <p class="text-xs text-text-secondary">OS2024001</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span class="badge badge-primary">OS-A</span></td>
+                                <td class="text-primary">¥25,000</td>
+                                <td class="text-error">-¥2,500</td>
+                                <td class="text-warning">+¥500</td>
+                                <td class="text-success font-medium">¥23,000</td>
+                                <td><span class="badge badge-success">已确认</span></td>
+                                <td>
+                                    <button class="btn btn-secondary text-sm" onclick="openDrawer('salary-adjust-drawer')">调整</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" class="salary-checkbox"></td>
+                                <td>2025-03</td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white text-sm">李</div>
+                                        <div>
+                                            <p class="font-medium">李四</p>
+                                            <p class="text-xs text-text-secondary">OS2024002</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span class="badge badge-primary">OS-A</span></td>
+                                <td class="text-primary">¥28,000</td>
+                                <td class="text-error">-¥2,800</td>
+                                <td class="text-text-secondary">-</td>
+                                <td class="text-success font-medium">¥25,200</td>
+                                <td><span class="badge badge-success">已确认</span></td>
+                                <td>
+                                    <button class="btn btn-secondary text-sm" onclick="openDrawer('salary-adjust-drawer')">调整</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" class="salary-checkbox"></td>
+                                <td>2025-03</td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-8 h-8 rounded-full bg-warning flex items-center justify-center text-white text-sm">王</div>
+                                        <div>
+                                            <p class="font-medium">王五</p>
+                                            <p class="text-xs text-text-secondary">OS2024003</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span class="badge badge-warning">OS-B</span></td>
+                                <td class="text-primary">¥18,000</td>
+                                <td class="text-error">-¥1,800</td>
+                                <td class="text-text-secondary">-</td>
+                                <td class="text-success font-medium">¥16,200</td>
+                                <td><span class="badge badge-warning">草稿</span></td>
+                                <td>
+                                    <button class="btn btn-secondary text-sm" onclick="openDrawer('salary-adjust-drawer')">调整</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" class="salary-checkbox"></td>
+                                <td>2025-03</td>
+                                <td>
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-white text-sm">赵</div>
+                                        <div>
+                                            <p class="font-medium">赵六</p>
+                                            <p class="text-xs text-text-secondary">OS2024004</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span class="badge badge-secondary">OS-C</span></td>
+                                <td class="text-primary">¥12,000</td>
+                                <td class="text-error">-¥1,200</td>
+                                <td class="text-text-secondary">-</td>
+                                <td class="text-success font-medium">¥10,800</td>
+                                <td><span class="badge badge-warning">草稿</span></td>
+                                <td>
+                                    <button class="btn btn-secondary text-sm" onclick="openDrawer('salary-adjust-drawer')">调整</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Accrual Management Tab -->
+            <div id="accrual-mgmt" class="accounting-tab-content hidden">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center gap-3">
+                        <select class="input-field w-32 text-sm">
+                            <option>2025-03</option>
+                            <option>2025-02</option>
+                            <option>2025-01</option>
+                        </select>
+                        <select class="input-field w-32 text-sm">
+                            <option>全部部门</option>
+                            <option>研发中心</option>
+                            <option>销售中心</option>
+                            <option>运营中心</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button class="btn btn-secondary" onclick="exportAccrualData()">
+                            <i data-lucide="download" class="w-4 h-4"></i>
+                            导出凭证
+                        </button>
+                        <button class="btn btn-primary" onclick="generateAccrualVoucher()">
+                            <i data-lucide="file-plus" class="w-4 h-4"></i>
+                            生成预提凭证
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+                    <div class="card p-4">
+                        <p class="text-text-secondary text-sm">预提金额合计</p>
+                        <p class="text-2xl font-semibold text-primary">¥2,845万</p>
+                        <p class="text-sm text-text-secondary mt-1">基于3月核算数据</p>
+                    </div>
+                    <div class="card p-4">
+                        <p class="text-text-secondary text-sm">实际发生金额</p>
+                        <p class="text-2xl font-semibold text-success">¥2,560万</p>
+                        <p class="text-sm text-success mt-1">已付款</p>
+                    </div>
+                    <div class="card p-4">
+                        <p class="text-text-secondary text-sm">差异金额</p>
+                        <p class="text-2xl font-semibold text-warning">¥285万</p>
+                        <p class="text-sm text-warning mt-1">待冲销</p>
+                    </div>
+                </div>
+
+                <div class="card overflow-hidden">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>凭证编号</th>
+                                <th>预提期间</th>
+                                <th>部门/成本中心</th>
+                                <th>关联核算</th>
+                                <th>预提金额</th>
+                                <th>实际发生</th>
+                                <th>差异</th>
+                                <th>状态</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="text-primary">ACCR-2025-001</td>
+                                <td>2025-03</td>
+                                <td>研发中心 / RD001</td>
+                                <td>1,245笔</td>
+                                <td class="text-primary">¥1,520万</td>
+                                <td class="text-success">¥1,380万</td>
+                                <td class="text-warning">¥140万</td>
+                                <td><span class="badge badge-success">已核销</span></td>
+                                <td>
+                                    <button class="btn btn-secondary text-sm">详情</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-primary">ACCR-2025-002</td>
+                                <td>2025-03</td>
+                                <td>销售中心 / SA001</td>
+                                <td>486笔</td>
+                                <td class="text-primary">¥680万</td>
+                                <td class="text-success">¥620万</td>
+                                <td class="text-warning">¥60万</td>
+                                <td><span class="badge badge-success">已核销</span></td>
+                                <td>
+                                    <button class="btn btn-secondary text-sm">详情</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-primary">ACCR-2025-003</td>
+                                <td>2025-03</td>
+                                <td>运营中心 / OP001</td>
+                                <td>455笔</td>
+                                <td class="text-primary">¥645万</td>
+                                <td class="text-text-secondary">-</td>
+                                <td class="text-text-secondary">-</td>
+                                <td><span class="badge badge-warning">待核销</span></td>
+                                <td>
+                                    <button class="btn btn-secondary text-sm">核销</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Bill Settlement Tab -->
+            <div id="bill-settlement" class="accounting-tab-content hidden">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center gap-3">
+                        <select class="input-field w-32 text-sm">
+                            <option>2025-03</option>
+                            <option>2025-02</option>
+                            <option>2025-01</option>
+                        </select>
+                        <select class="input-field w-40 text-sm">
+                            <option>全部供应商</option>
+                            <option>中软国际</option>
+                            <option>文思海辉</option>
+                            <option>软通动力</option>
+                        </select>
+                        <select class="input-field w-32 text-sm">
+                            <option>全部状态</option>
+                            <option>待对账</option>
+                            <option>已确认</option>
+                            <option>结算中</option>
+                            <option>已结算</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button class="btn btn-secondary" onclick="exportBills()">
+                            <i data-lucide="download" class="w-4 h-4"></i>
+                            导出账单
+                        </button>
+                        <button class="btn btn-primary" onclick="batchSettlement()">
+                            <i data-lucide="check-circle" class="w-4 h-4"></i>
+                            批量结算
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-6">
+                    <div class="card p-4">
+                        <p class="text-text-secondary text-sm">待对账账单</p>
+                        <p class="text-2xl font-semibold text-warning">12</p>
+                        <p class="text-sm text-text-secondary mt-1">金额 ¥580万</p>
+                    </div>
+                    <div class="card p-4">
+                        <p class="text-text-secondary text-sm">已确认账单</p>
+                        <p class="text-2xl font-semibold text-primary">8</p>
+                        <p class="text-sm text-text-secondary mt-1">金额 ¥420万</p>
+                    </div>
+                    <div class="card p-4">
+                        <p class="text-text-secondary text-sm">结算中</p>
+                        <p class="text-2xl font-semibold text-info">5</p>
+                        <p class="text-sm text-text-secondary mt-1">金额 ¥260万</p>
+                    </div>
+                    <div class="card p-4">
+                        <p class="text-text-secondary text-sm">已结算</p>
+                        <p class="text-2xl font-semibold text-success">28</p>
+                        <p class="text-sm text-text-secondary mt-1">金额 ¥1,840万</p>
+                    </div>
+                </div>
+
+                <div class="card overflow-hidden">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>账单编号</th>
+                                <th>供应商</th>
+                                <th>账单期间</th>
+                                <th>账单金额</th>
+                                <th>结算金额</th>
+                                <th>差异</th>
+                                <th>状态</th>
+                                <th>付款日期</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="text-primary">BILL-2025-031</td>
+                                <td>中软国际</td>
+                                <td>2025-03</td>
+                                <td class="text-primary">¥320万</td>
+                                <td class="text-success">¥320万</td>
+                                <td class="text-success">-</td>
+                                <td><span class="badge badge-success">已结算</span></td>
+                                <td>2025-04-05</td>
+                                <td>
+                                    <button class="btn btn-secondary text-sm">详情</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-primary">BILL-2025-032</td>
+                                <td>文思海辉</td>
+                                <td>2025-03</td>
+                                <td class="text-primary">¥280万</td>
+                                <td class="text-success">¥280万</td>
+                                <td class="text-success">-</td>
+                                <td><span class="badge badge-success">已结算</span></td>
+                                <td>2025-04-05</td>
+                                <td>
+                                    <button class="btn btn-secondary text-sm">详情</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-primary">BILL-2025-033</td>
+                                <td>软通动力</td>
+                                <td>2025-03</td>
+                                <td class="text-primary">¥260万</td>
+                                <td class="text-text-secondary">-</td>
+                                <td class="text-text-secondary">-</td>
+                                <td><span class="badge badge-warning">待对账</span></td>
+                                <td>-</td>
+                                <td>
+                                    <button class="btn btn-primary text-sm" onclick="confirmBill('BILL-2025-033')">确认</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-primary">BILL-2025-034</td>
+                                <td>中软国际</td>
+                                <td>2025-03</td>
+                                <td class="text-primary">¥180万</td>
+                                <td class="text-text-secondary">-</td>
+                                <td class="text-text-secondary">-</td>
+                                <td><span class="badge badge-primary">已确认</span></td>
+                                <td>-</td>
+                                <td>
+                                    <button class="btn btn-primary text-sm" onclick="startSettlement('BILL-2025-034')">发起结算</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    <!-- Agent悬浮球 -->
+    <div class="agent-orb" onclick="toggleAgent()">
+        <i data-lucide="bot" class="w-6 h-6 text-white"></i>
+    </div>
+
+    <!-- Agent对话面板 -->
+    <div id="agent-chat" class="agent-chat">
+        <div class="p-4 border-b border-border flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-primary-bg flex items-center justify-center">
+                    <i data-lucide="bot" class="w-4 h-4 text-primary"></i>
+                </div>
+                <span class="text-text-primary font-medium">智能助手</span>
+            </div>
+            <button onclick="toggleAgent()" class="text-text-secondary hover:text-text-primary">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+        <div class="flex-1 p-4 overflow-y-auto max-h-80 space-y-4" id="chat-messages">
+            <div class="flex items-start gap-3">
+                <div class="w-8 h-8 rounded-full bg-primary-bg flex items-center justify-center flex-shrink-0">
+                    <i data-lucide="bot" class="w-4 h-4 text-primary"></i>
+                </div>
+                <div class="bg-bg-hover rounded-lg p-3 max-w-[80%]">
+                    <p class="text-text-primary text-sm">您好！我是多元化用工智能助手。我可以帮您：</p>
+                    <ul class="text-text-secondary text-sm mt-2 space-y-1">
+                        <li>• 查询预算执行情况</li>
+                        <li>• 发起定级或续期流程</li>
+                        <li>• 分析成本与效能数据</li>
+                        <li>• 查看待办审批事项</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="p-4 border-t border-border">
+            <div class="flex items-center gap-2">
+                <input type="text" id="chat-input" placeholder="输入指令或问题..." class="input-field text-sm" onkeypress="if(event.key==='Enter')sendMessage()">
+                <button onclick="sendMessage()" class="w-9 h-9 rounded-lg bg-primary flex items-center justify-center hover:bg-primary-light transition-colors">
+                    <i data-lucide="send" class="w-4 h-4 text-white"></i>
+                </button>
+            </div>
+            <div class="flex gap-2 mt-2">
+                <button onclick="quickAsk('查看本季度预算执行')" class="text-xs px-2 py-1 rounded bg-primary-bg text-primary hover:bg-primary hover:text-white transition-colors">预算执行</button>
+                <button onclick="quickAsk('发起定级流程')" class="text-xs px-2 py-1 rounded bg-primary-bg text-primary hover:bg-primary hover:text-white transition-colors">发起定级</button>
+                <button onclick="quickAsk('分析成本占比')" class="text-xs px-2 py-1 rounded bg-primary-bg text-primary hover:bg-primary hover:text-white transition-colors">成本分析</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 抽屉 - 审批详情 -->
+    <div id="approval-drawer" class="drawer">
+        <div class="p-6">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-lg font-semibold text-text-primary">审批详情</h3>
+                <button onclick="closeDrawer('approval-drawer')" class="text-text-secondary hover:text-text-primary">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <div class="space-y-4">
+                <div class="p-3 rounded-lg bg-bg-hover border border-border">
+                    <p class="text-text-secondary text-sm mb-1">申请标题</p>
+                    <p class="text-text-primary font-medium">研发中心Q1外包预算</p>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="p-3 rounded-lg bg-bg-hover">
+                        <p class="text-text-secondary text-sm">申请人</p>
+                        <p class="text-text-primary">张经理</p>
+                    </div>
+                    <div class="p-3 rounded-lg bg-bg-hover">
+                        <p class="text-text-secondary text-sm">申请金额</p>
+                        <p class="text-primary font-medium">¥2,000,000</p>
+                    </div>
+                </div>
+                <div class="p-3 rounded-lg bg-bg-hover">
+                    <p class="text-text-secondary text-sm mb-3">审批流程</p>
+                    <div class="space-y-3">
+                        <div class="timeline-item">
+                            <p class="text-sm text-text-primary">申请人提交</p>
+                            <p class="text-xs text-text-secondary">2025-01-15 09:30</p>
+                        </div>
+                        <div class="timeline-item">
+                            <p class="text-sm text-text-primary">TA初审通过</p>
+                            <p class="text-xs text-text-secondary">2025-01-15 14:20</p>
+                        </div>
+                        <div class="timeline-item">
+                            <p class="text-sm text-primary">待您审批</p>
+                            <p class="text-xs text-text-secondary">当前节点</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-3 rounded-lg bg-bg-hover">
+                    <p class="text-text-secondary text-sm mb-2">审批意见</p>
+                    <textarea rows="3" placeholder="请输入审批意见..." class="input-field"></textarea>
+                </div>
+                <div class="flex gap-3">
+                    <button class="btn btn-primary flex-1" onclick="approve()">
+                        <i data-lucide="check" class="w-4 h-4"></i>
+                        通过
+                    </button>
+                    <button class="btn btn-secondary flex-1 text-error border-error" onclick="reject()">
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                        驳回
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast">
+        <span id="toast-message">操作成功</span>
+    </div>
+
+    <script>
+        // 初始化Lucide图标
+        lucide.createIcons();
+
+        // 当前视图状态
+        let currentView = 'v1';
+        let currentRole = 'HRBP';
+
+        // 视图切换
+        function switchView(viewId) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+
+            document.querySelectorAll('.nav-link').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`.nav-link[data-view="${viewId}"]`)?.classList.add('active');
+
+            currentView = viewId;
+
+            if (viewId === 'v7') {
+                setTimeout(initCharts, 100);
+            }
+
+            window.scrollTo(0, 0);
+        }
+
+        // 角色下拉菜单切换
+        function toggleRoleDropdown() {
+            const dropdown = document.getElementById('role-dropdown');
+            dropdown.classList.toggle('open');
+        }
+
+        // 点击外部关闭角色下拉菜单
+        document.addEventListener('click', function(e) {
+            const roleBtn = e.target.closest('button[onclick="toggleRoleDropdown()"]');
+            const dropdown = document.getElementById('role-dropdown');
+            if (!roleBtn && dropdown && dropdown.classList.contains('open')) {
+                dropdown.classList.remove('open');
+            }
+        });
+
+        // 角色切换
+        function switchRole(role) {
+            const dropdown = document.getElementById('role-dropdown');
+            dropdown.classList.remove('open');
+
+            currentRole = role;
+            document.getElementById('current-role-display').textContent = role;
+
+            document.querySelectorAll('.role-option').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`.role-option[data-role="${role}"]`)?.classList.add('active');
+
+            showToast(`已切换至 ${role} 视角`);
+            updateTodoByRole(role);
+        }
+
+        // 根据角色更新待办
+        function updateTodoByRole(role) {
+            const todoList = document.getElementById('todo-list');
+            let todos = '';
+
+            if (role === 'HRBP') {
+                todos = `
+                    <div class="flex items-center justify-between p-4 rounded-lg bg-bg-hover border border-border">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-lg bg-error/10 flex items-center justify-center">
+                                <i data-lucide="alert-circle" class="w-5 h-5 text-error"></i>
+                            </div>
+                            <div>
+                                <p class="text-text-primary font-medium">3个预算活动待审批</p>
+                                <p class="text-text-secondary text-sm">研发中心 Q1 外包预算</p>
+                            </div>
+                        </div>
+                        <button class="btn btn-secondary text-sm" onclick="switchView('v6')">去审批</button>
+                    </div>
+                    <div class="flex items-center justify-between p-4 rounded-lg bg-bg-hover border border-border">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-lg bg-warning/10 flex items-center justify-center">
+                                <i data-lucide="clock" class="w-5 h-5 text-warning"></i>
+                            </div>
+                            <div>
+                                <p class="text-text-primary font-medium">5个HC将在7天内到期</p>
+                                <p class="text-text-secondary text-sm">建议及时发起续期或离场流程</p>
+                            </div>
+                        </div>
+                        <button class="btn btn-secondary text-sm" onclick="switchView('v5')">处理</button>
+                    </div>
+                `;
+            } else if (role === 'MGR') {
+                todos = `
+                    <div class="flex items-center justify-between p-4 rounded-lg bg-bg-hover border border-border">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-lg bg-error/10 flex items-center justify-center">
+                                <i data-lucide="file-check" class="w-5 h-5 text-error"></i>
+                            </div>
+                            <div>
+                                <p class="text-text-primary font-medium">2个定级申请待审批</p>
+                                <p class="text-text-secondary text-sm">高级Java工程师、测试工程师</p>
+                            </div>
+                        </div>
+                        <button class="btn btn-secondary text-sm" onclick="switchView('v6')">去审批</button>
+                    </div>
+                `;
+            } else if (role === 'OWN') {
+                todos = `
+                    <div class="flex items-center justify-between p-4 rounded-lg bg-bg-hover border border-border">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-lg bg-warning/10 flex items-center justify-center">
+                                <i data-lucide="clock" class="w-5 h-5 text-warning"></i>
+                            </div>
+                            <div>
+                                <p class="text-text-primary font-medium">2个HC即将到期</p>
+                                <p class="text-text-secondary text-sm">张三-7天后到期，李四-12天后到期</p>
+                            </div>
+                        </div>
+                        <button class="btn btn-secondary text-sm" onclick="switchView('v5')">处理</button>
+                    </div>
+                `;
+            }
+
+            todoList.innerHTML = todos;
+            lucide.createIcons();
+        }
+
+        // Agent对话
+        function toggleAgent() {
+            document.getElementById('agent-chat').classList.toggle('open');
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            if (!message) return;
+
+            addUserMessage(message);
+            input.value = '';
+
+            setTimeout(() => {
+                const reply = generateAIReply(message);
+                addAIMessage(reply);
+            }, 800);
+        }
+
+        function quickAsk(text) {
+            document.getElementById('chat-input').value = text;
+            sendMessage();
+        }
+
+        function addUserMessage(text) {
+            const container = document.getElementById('chat-messages');
+            container.innerHTML += `
+                <div class="flex items-start gap-3 justify-end">
+                    <div class="bg-primary text-white rounded-lg p-3 max-w-[80%]">
+                        <p class="text-sm">${text}</p>
+                    </div>
+                </div>
+            `;
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function addAIMessage(text) {
+            const container = document.getElementById('chat-messages');
+            container.innerHTML += `
+                <div class="flex items-start gap-3">
+                    <div class="w-8 h-8 rounded-full bg-primary-bg flex items-center justify-center flex-shrink-0">
+                        <i data-lucide="bot" class="w-4 h-4 text-primary"></i>
+                    </div>
+                    <div class="bg-bg-hover rounded-lg p-3 max-w-[80%]">
+                        <p class="text-text-primary text-sm">${text}</p>
+                    </div>
+                </div>
+            `;
+            lucide.createIcons();
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function generateAIReply(message) {
+            if (message.includes('预算')) {
+                return '本季度预算执行率为87.3%，研发中心预算使用率最高（92%），销售中心有5%结余。需要查看详细分析吗？';
+            } else if (message.includes('定级')) {
+                return '已为您打开发起定级流程。请选择定级类型：<br><button class="text-primary underline" onclick="switchView(\'v3\')">通用定级</button> | <button class="text-primary underline" onclick="switchView(\'v3\')">批量定级</button>';
+            } else if (message.includes('成本') || message.includes('分析')) {
+                return '外包成本占总人力成本的23.5%，较去年同期下降2.3%。研发中心占比最高（35%）。正在为您跳转数据分析页面...';
+                setTimeout(() => switchView('v7'), 1500);
+            }
+            return '收到您的问题，我可以帮您查询预算、发起流程或分析数据。请告诉我具体需求。';
+        }
+
+        // 抽屉操作
+        function openDrawer(id) {
+            document.getElementById(id).classList.add('open');
+        }
+
+        function closeDrawer(id) {
+            document.getElementById(id).classList.remove('open');
+        }
+
+        // Tab切换
+        function switchTab(btn, tabId) {
+            btn.parentElement.querySelectorAll('.tab-btn').forEach(t => {
+                t.classList.remove('active');
+            });
+            btn.classList.add('active');
+        }
+
+        // 批量审批
+        function toggleSelectAll() {
+            const checked = document.getElementById('select-all').checked;
+            document.querySelectorAll('.row-checkbox').forEach(cb => cb.checked = checked);
+            updateBatchButtons();
+        }
+
+        function updateBatchButtons() {
+            const checked = document.querySelectorAll('.row-checkbox:checked').length;
+            const batchApproveBtn = document.getElementById('batch-approve-btn');
+            const batchRejectBtn = document.getElementById('batch-reject-btn');
+
+            if (checked > 0) {
+                batchApproveBtn.style.display = 'inline-flex';
+                batchRejectBtn.style.display = 'inline-flex';
+                batchApproveBtn.innerHTML = `<i data-lucide="check" class="w-4 h-4"></i> 批量通过 (${checked})`;
+            } else {
+                batchApproveBtn.style.display = 'none';
+                batchRejectBtn.style.display = 'none';
+            }
+            lucide.createIcons();
+        }
+
+        function batchApprove() {
+            showToast('批量审批通过成功');
+            document.getElementById('select-all').checked = false;
+            toggleSelectAll();
+        }
+
+        function batchReject() {
+            showToast('批量审批驳回成功');
+            document.getElementById('select-all').checked = false;
+            toggleSelectAll();
+        }
+
+        // 审批操作
+        function approve() {
+            showToast('审批已通过');
+            closeDrawer('approval-drawer');
+        }
+
+        function reject() {
+            showToast('审批已驳回');
+            closeDrawer('approval-drawer');
+        }
+
+        // Toast提示
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-message').textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // 预算选择
+        function selectBudget(id) {
+            showToast(`已选择预算 BUD-2025-00${id}`);
+        }
+
+        // 预算模拟器
+        function updateSimulation(percent) {
+            document.getElementById('hc-change').textContent = (percent > 0 ? '+' : '') + percent + '%';
+            const baseHC = 1248;
+            const avgCost = 25000;
+            const change = Math.round(baseHC * (percent / 100));
+            const impact = change * avgCost * 12;
+            document.getElementById('budget-impact').textContent = (impact >= 0 ? '+' : '') + '¥' + (impact / 10000).toFixed(1) + '万/年';
+        }
+
+        // 图表初始化
+        function initCharts() {
+            const costChart = echarts.init(document.getElementById('cost-trend-chart'));
+            costChart.setOption({
+                backgroundColor: 'transparent',
+                grid: { top: 30, right: 30, bottom: 30, left: 60 },
+                xAxis: {
+                    type: 'category',
+                    data: ['1月', '2月', '3月', '4月', '5月', '6月'],
+                    axisLine: { lineStyle: { color: '#E5E6EB' } },
+                    axisLabel: { color: '#666666' }
+                },
+                yAxis: {
+                    type: 'value',
+                    axisLine: { show: false },
+                    splitLine: { lineStyle: { color: '#E5E6EB' } },
+                    axisLabel: { color: '#666666' }
+                },
+                series: [{
+                    data: [320, 332, 301, 334, 390, 420],
+                    type: 'line',
+                    smooth: true,
+                    lineStyle: { color: '#00665F', width: 3 },
+                    areaStyle: {
+                        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                            { offset: 0, color: 'rgba(0, 102, 95, 0.2)' },
+                            { offset: 1, color: 'rgba(0, 102, 95, 0)' }
+                        ])
+                    },
+                    itemStyle: { color: '#00665F' }
+                }]
+            });
+
+            const deptChart = echarts.init(document.getElementById('dept-chart'));
+            deptChart.setOption({
+                backgroundColor: 'transparent',
+                grid: { top: 30, right: 30, bottom: 30, left: 60 },
+                xAxis: {
+                    type: 'category',
+                    data: ['研发', '销售', '运营', '产品', '市场', '职能'],
+                    axisLine: { lineStyle: { color: '#E5E6EB' } },
+                    axisLabel: { color: '#666666' }
+                },
+                yAxis: {
+                    type: 'value',
+                    axisLine: { show: false },
+                    splitLine: { lineStyle: { color: '#E5E6EB' } },
+                    axisLabel: { color: '#666666', formatter: '{value}%' }
+                },
+                series: [{
+                    data: [35, 25, 15, 12, 8, 5],
+                    type: 'bar',
+                    barWidth: '50%',
+                    itemStyle: {
+                        color: '#00665F',
+                        borderRadius: [4, 4, 0, 0]
+                    }
+                }]
+            });
+
+            window.addEventListener('resize', () => {
+                costChart.resize();
+                deptChart.resize();
+            });
+        }
+
+        // 显示KPI详情
+        function showKPIDetail(type) {
+            const titles = {
+                output: '人均产出比详情',
+                cost: '外包成本占比详情',
+                redundancy: '冗余HC分析',
+                supplier: '供应商风险详情'
+            };
+            showToast(`已加载 ${titles[type]} 数据`);
+        }
+
+        // ===== V2-E: 预算管理增强功能 =====
+        // 预算类型Tab切换
+        function switchBudgetTab(btn, tabId) {
+            btn.parentElement.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+            document.querySelectorAll('.budget-tab-content').forEach(c => c.classList.add('hidden'));
+            document.getElementById(tabId).classList.remove('hidden');
+        }
+
+        // 人员分类选择
+        function selectPersonType(element, type) {
+            document.querySelectorAll('.person-type-item').forEach(el => {
+                el.classList.remove('active', 'bg-primary-bg', 'border-primary');
+                el.classList.add('border-transparent');
+            });
+            element.classList.add('active', 'bg-primary-bg', 'border-primary');
+            element.classList.remove('border-transparent');
+            showToast(`已筛选: ${type === 'all' ? '全部编制' : type}`);
+        }
+
+        // 编制详情展示
+        function showBudgetDetail(budgetId) {
+            showToast(`加载编制详情: ${budgetId}`);
+        }
+
+        // 释放编制
+        function releaseBudget() {
+            if (confirm('确定要释放该编制吗？')) {
+                showToast('编制已释放');
+            }
+        }
+
+        // 导出日常预算
+        function exportDailyBudget() {
+            showToast('正在导出日常预算编制...');
+        }
+
+        // 筛选日常预算
+        function filterDailyBudget() {
+            showToast('已更新筛选条件');
+        }
+
+        // ===== V9: 人员管理功能 =====
+        // 人员分类选择
+        function selectPersonnelType(element, type) {
+            document.querySelectorAll('#personnel-type-tree .person-type-item').forEach(el => {
+                el.classList.remove('active', 'bg-primary-bg', 'border-primary');
+                el.classList.add('border-transparent');
+            });
+            element.classList.add('active', 'bg-primary-bg', 'border-primary');
+            element.classList.remove('border-transparent');
+            showToast(`已筛选: ${type === 'all' ? '全部人员' : type}`);
+        }
+
+        // 人员详情展示
+        function showPersonDetail(personId) {
+            showToast(`加载人员详情: ${personId}`);
+        }
+
+        // 人员分类转换
+        function convertPersonType(personId) {
+            showToast(`打开人员分类转换: ${personId}`);
+        }
+
+        // 导入人员
+        function importPersonnel() {
+            showToast('打开批量导入对话框');
+        }
+
+        // 导出人员
+        function exportPersonnel() {
+            showToast('正在导出人员数据...');
+        }
+
+        // ===== V10: 核算管理功能 =====
+        // 核算Tab切换
+        function switchAccountingTab(btn, tabId) {
+            btn.parentElement.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+            document.querySelectorAll('.accounting-tab-content').forEach(c => c.classList.add('hidden'));
+            document.getElementById(tabId).classList.remove('hidden');
+        }
+
+        // 全选工资核算
+        function toggleSelectAllSalary() {
+            const checked = document.getElementById('select-all-salary').checked;
+            document.querySelectorAll('.salary-checkbox').forEach(cb => cb.checked = checked);
+        }
+
+        // 导入工资数据
+        function importSalaryData() {
+            showToast('打开工资数据导入对话框');
+        }
+
+        // 导出工资数据
+        function exportSalaryData() {
+            showToast('正在导出工资核算数据...');
+        }
+
+        // 批量确认工资
+        function batchConfirmSalary() {
+            showToast('批量确认工资核算成功');
+        }
+
+        // 生成预提凭证
+        function generateAccrualVoucher() {
+            showToast('预提凭证生成成功');
+        }
+
+        // 导出预提凭证
+        function exportAccrualData() {
+            showToast('正在导出预提凭证...');
+        }
+
+        // 确认账单
+        function confirmBill(billId) {
+            showToast(`账单 ${billId} 已确认`);
+        }
+
+        // 发起结算
+        function startSettlement(billId) {
+            showToast(`账单 ${billId} 已发起结算`);
+        }
+
+        // 批量结算
+        function batchSettlement() {
+            showToast('批量结算申请已提交');
+        }
+
+        // 导出账单
+        function exportBills() {
+            showToast('正在导出账单...');
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>
