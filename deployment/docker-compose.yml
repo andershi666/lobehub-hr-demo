@@ -1,0 +1,138 @@
+version: '3.8'
+
+# ╔══════════════════════════════════════════════════════════════╗
+# ║        HR AI 专属系统 - LobeHub 私有化部署                      ║
+# ║  服务组成：LobeHub + PostgreSQL(pgvector) + Redis + RustFS     ║
+# ╚══════════════════════════════════════════════════════════════╝
+
+services:
+
+  # ── 主应用 ──────────────────────────────────────────────────
+  lobehub:
+    image: lobehub/lobehub:latest
+    container_name: hr-lobehub
+    restart: unless-stopped
+    ports:
+      - "${LOBE_PORT:-3210}:3210"
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rustfs-init:
+        condition: service_completed_successfully
+    env_file:
+      - .env
+    environment:
+      # 数据库
+      - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD}@postgresql:5432/${LOBE_DB_NAME}
+      # Redis
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379
+      # S3（内网地址供容器间通信）
+      - S3_ENDPOINT=http://rustfs:9000
+      - S3_ACCESS_KEY_ID=${MINIO_ROOT_USER}
+      - S3_SECRET_ACCESS_KEY=${MINIO_ROOT_PASSWORD}
+      - S3_BUCKET=${S3_BUCKET:-lobe}
+      - S3_REGION=us-east-1
+      # 应用地址（容器内部自调用）
+      - INTERNAL_APP_URL=http://localhost:3210
+    volumes:
+      - ./logs:/app/logs
+    networks:
+      - hr-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3210/api/health || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  # ── PostgreSQL + pgvector ────────────────────────────────────
+  postgresql:
+    image: pgvector/pgvector:pg16
+    container_name: hr-postgresql
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${LOBE_DB_NAME}
+    volumes:
+      - ./data/postgresql:/var/lib/postgresql/data
+    networks:
+      - hr-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d ${LOBE_DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  # ── Redis ────────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: hr-redis
+    restart: unless-stopped
+    command: >
+      redis-server
+      --requirepass ${REDIS_PASSWORD}
+      --appendonly yes
+      --maxmemory 256mb
+      --maxmemory-policy allkeys-lru
+    volumes:
+      - ./data/redis:/data
+    networks:
+      - hr-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # ── RustFS（S3 兼容对象存储）───────────────────────────────────
+  rustfs:
+    image: rustfs/rustfs:latest
+    container_name: hr-rustfs
+    restart: unless-stopped
+    ports:
+      - "${S3_PORT:-9000}:9000"
+      - "${S3_CONSOLE_PORT:-9001}:9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    volumes:
+      - ./data/rustfs:/data
+    command: server /data --console-address ":9001"
+    networks:
+      - hr-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9000/minio/health/live || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  # ── RustFS 初始化（创建 bucket）──────────────────────────────
+  rustfs-init:
+    image: minio/mc:latest
+    container_name: hr-rustfs-init
+    restart: "no"
+    depends_on:
+      rustfs:
+        condition: service_healthy
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    entrypoint: >
+      /bin/sh -c "
+      mc alias set rustfs http://rustfs:9000 $${MINIO_ROOT_USER} $${MINIO_ROOT_PASSWORD} &&
+      mc mb --ignore-existing rustfs/${S3_BUCKET:-lobe} &&
+      mc anonymous set public rustfs/${S3_BUCKET:-lobe} &&
+      echo '✅ S3 bucket ready'
+      "
+    networks:
+      - hr-network
+
+networks:
+  hr-network:
+    driver: bridge
+    name: hr-ai-network

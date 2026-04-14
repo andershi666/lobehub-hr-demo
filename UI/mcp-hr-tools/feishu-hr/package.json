@@ -1,0 +1,21 @@
+{
+  "name": "@hr-system/feishu-hr-mcp",
+  "version": "1.0.0",
+  "description": "飞书HR MCP Server - 为HR Agent提供飞书HR数据访问能力",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "ts-node src/index.ts",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "axios": "^1.6.0",
+    "dotenv": "^16.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "ts-node": "^10.9.0",
+    "typescript": "^5.0.0"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "hr-agent-seeder",
+  "version": "1.0.0",
+  "description": "HR Agent 注入脚本 - 将 8 个 HR Agent 批量写入 LobeHub PostgreSQL",
+  "main": "seed.js",
+  "scripts": {
+    "seed": "node seed.js",
+    "start": "node seed.js"
+  },
+  "dependencies": {
+    "pg": "^8.11.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

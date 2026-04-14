@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(choco:*)",
+      "Bash(curl -L -o \"/c/Users/shixiaoguang/AppData/Local/Temp/node22.zip\" \"https://nodejs.org/dist/v22.15.0/node-v22.15.0-win-x64.zip\")",
+      "Read(//c/Users/shixiaoguang/AppData/Local/**)",
+      "Bash(unzip -q Temp/node22.zip)",
+      "Bash(export PATH=\"/c/Users/shixiaoguang/AppData/Local/node-v22.15.0-win-x64:$PATH\")",
+      "Bash(bun run:*)"
+    ]
+  }
+}

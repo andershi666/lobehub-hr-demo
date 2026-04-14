@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HR AI 智能助手系统 - 工作台预览</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", sans-serif;
+      background: #f8fafc;
+      color: #1e293b;
+    }
+
+    /* ---- 顶栏 ---- */
+    .topbar {
+      background: #fff;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 0 24px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .topbar-left { display: flex; align-items: center; gap: 12px; }
+    .logo { width: 32px; height: 32px; background: linear-gradient(135deg, #6366f1, #8b5cf6); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 16px; }
+    .sys-title { font-size: 16px; font-weight: 600; color: #1e293b; }
+    .nav-tabs { display: flex; gap: 4px; }
+    .nav-tab {
+      padding: 6px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      color: #64748b;
+      border: none;
+      background: transparent;
+      transition: all 0.15s;
+    }
+    .nav-tab:hover { background: #f1f5f9; color: #1e293b; }
+    .nav-tab.active { background: #ede9fe; color: #6366f1; font-weight: 500; }
+    .topbar-right { display: flex; align-items: center; gap: 12px; }
+    .user-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #0ea5e9, #6366f1); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; }
+
+    /* ---- 主内容 ---- */
+    .main { padding: 24px; max-width: 1400px; margin: 0 auto; }
+
+    /* ---- 欢迎栏 ---- */
+    .welcome-banner {
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #0ea5e9 100%);
+      border-radius: 16px;
+      padding: 28px 32px;
+      color: #fff;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .welcome-text h2 { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+    .welcome-text p { font-size: 14px; opacity: 0.85; }
+    .welcome-stats { display: flex; gap: 32px; }
+    .stat-item { text-align: center; }
+    .stat-item .num { font-size: 28px; font-weight: 700; }
+    .stat-item .lbl { font-size: 12px; opacity: 0.8; margin-top: 2px; }
+
+    /* ---- 指标卡片 ---- */
+    .section-title { font-size: 15px; font-weight: 600; color: #475569; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+    .metrics-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-bottom: 24px; }
+    @media (max-width: 1200px) { .metrics-grid { grid-template-columns: repeat(3, 1fr); } }
+    .metric-card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 16px;
+      transition: box-shadow 0.15s;
+    }
+    .metric-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,.08); }
+    .metric-icon { font-size: 20px; margin-bottom: 8px; }
+    .metric-value { font-size: 24px; font-weight: 700; color: #1e293b; }
+    .metric-label { font-size: 12px; color: #94a3b8; margin-top: 2px; }
+    .metric-change { font-size: 11px; margin-top: 6px; padding: 2px 6px; border-radius: 4px; display: inline-block; }
+    .metric-change.up { background: #dcfce7; color: #16a34a; }
+    .metric-change.down { background: #fee2e2; color: #dc2626; }
+    .metric-change.neutral { background: #f1f5f9; color: #64748b; }
+
+    /* ---- Agent 网格 ---- */
+    .agents-section { margin-bottom: 24px; }
+    .agents-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    @media (max-width: 1100px) { .agents-grid { grid-template-columns: repeat(2, 1fr); } }
+    .agent-card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .agent-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--agent-color);
+    }
+    .agent-card:hover {
+      box-shadow: 0 8px 24px rgba(0,0,0,.1);
+      transform: translateY(-2px);
+    }
+    .agent-header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+    .agent-avatar {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      background: var(--agent-bg);
+    }
+    .agent-info h3 { font-size: 14px; font-weight: 600; color: #1e293b; }
+    .agent-info p { font-size: 12px; color: #64748b; margin-top: 2px; }
+    .agent-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 12px; }
+    .agent-tag {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 100px;
+      background: var(--agent-bg);
+      color: var(--agent-color);
+      font-weight: 500;
+    }
+    .agent-scenarios { list-style: none; }
+    .agent-scenarios li {
+      font-size: 12px;
+      color: #475569;
+      padding: 4px 0;
+      border-top: 1px solid #f1f5f9;
+      cursor: pointer;
+      transition: color 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .agent-scenarios li:hover { color: var(--agent-color); }
+    .agent-scenarios li::before { content: '→'; font-size: 10px; opacity: 0.5; }
+    .chat-btn {
+      margin-top: 12px;
+      width: 100%;
+      padding: 8px;
+      background: var(--agent-color);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .chat-btn:hover { opacity: 0.88; }
+
+    /* ---- 快捷操作 ---- */
+    .shortcuts-section { margin-bottom: 24px; }
+    .shortcuts-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+    @media (max-width: 900px) { .shortcuts-grid { grid-template-columns: repeat(3, 1fr); } }
+    .shortcut-btn {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 12px 16px;
+      cursor: pointer;
+      font-size: 13px;
+      color: #475569;
+      text-align: left;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .shortcut-btn:hover { border-color: #6366f1; color: #6366f1; background: #faf5ff; }
+    .shortcut-icon { font-size: 18px; }
+
+    /* ---- Chat 侧边栏 ---- */
+    .chat-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.4);
+      z-index: 200;
+      display: none;
+      backdrop-filter: blur(2px);
+    }
+    .chat-overlay.open { display: block; }
+    .chat-panel {
+      position: fixed;
+      top: 0; right: -560px; bottom: 0;
+      width: 560px;
+      background: #fff;
+      z-index: 201;
+      display: flex;
+      flex-direction: column;
+      transition: right 0.3s cubic-bezier(.4,0,.2,1);
+      box-shadow: -8px 0 32px rgba(0,0,0,.12);
+    }
+    .chat-panel.open { right: 0; }
+    .chat-panel-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .chat-panel-avatar { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+    .chat-panel-info h3 { font-size: 15px; font-weight: 600; }
+    .chat-panel-info p { font-size: 12px; color: #64748b; }
+    .chat-close { margin-left: auto; width: 32px; height: 32px; border-radius: 8px; background: #f1f5f9; border: none; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; }
+    .chat-messages { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+    .msg { max-width: 85%; }
+    .msg.user { align-self: flex-end; }
+    .msg.assistant { align-self: flex-start; }
+    .msg-bubble {
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .msg.user .msg-bubble { background: #6366f1; color: #fff; border-bottom-right-radius: 4px; }
+    .msg.assistant .msg-bubble { background: #f1f5f9; color: #1e293b; border-bottom-left-radius: 4px; }
+    .msg-time { font-size: 11px; color: #94a3b8; margin-top: 4px; text-align: right; }
+    .msg.assistant .msg-time { text-align: left; }
+    .chat-input-area {
+      padding: 16px 20px;
+      border-top: 1px solid #e2e8f0;
+      background: #fff;
+    }
+    .chat-quick-prompts { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+    .quick-prompt {
+      font-size: 11px;
+      padding: 4px 10px;
+      border: 1px solid #e2e8f0;
+      border-radius: 100px;
+      cursor: pointer;
+      color: #475569;
+      transition: all 0.15s;
+      background: transparent;
+    }
+    .quick-prompt:hover { border-color: #6366f1; color: #6366f1; background: #f5f3ff; }
+    .chat-input-row { display: flex; gap: 8px; }
+    .chat-input {
+      flex: 1;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 14px;
+      outline: none;
+      resize: none;
+      font-family: inherit;
+      color: #1e293b;
+    }
+    .chat-input:focus { border-color: #6366f1; box-shadow: 0 0 0 3px #ede9fe; }
+    .send-btn {
+      padding: 10px 20px;
+      background: #6366f1;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .send-btn:hover { opacity: 0.88; }
+    .lobe-tip {
+      font-size: 11px;
+      color: #94a3b8;
+      text-align: center;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- 顶栏 -->
+<header class="topbar">
+  <div class="topbar-left">
+    <div class="logo">HR</div>
+    <span class="sys-title">HR AI 智能助手系统</span>
+    <nav class="nav-tabs">
+      <button class="nav-tab active">🏠 工作台</button>
+      <button class="nav-tab">💬 对话记录</button>
+      <button class="nav-tab">📚 知识库</button>
+      <button class="nav-tab">⚙️ 设置</button>
+    </nav>
+  </div>
+  <div class="topbar-right">
+    <span style="font-size:13px;color:#64748b;">HR专员 · 张三</span>
+    <div class="user-avatar">张</div>
+  </div>
+</header>
+
+<!-- 主内容 -->
+<main class="main">
+
+  <!-- 欢迎横幅 -->
+  <div class="welcome-banner">
+    <div class="welcome-text">
+      <h2>早上好，HR专员 👋</h2>
+      <p>今天有 3 个待处理任务 · 2 个新的招聘申请 · 绩效评估周期还有 12 天结束</p>
+    </div>
+    <div class="welcome-stats">
+      <div class="stat-item"><div class="num">8</div><div class="lbl">AI 助手</div></div>
+      <div class="stat-item"><div class="num">25</div><div class="lbl">专业技能</div></div>
+      <div class="stat-item"><div class="num">3</div><div class="lbl">数据系统</div></div>
+    </div>
+  </div>
+
+  <!-- HR 核心指标 -->
+  <div class="section-title">📊 HR 核心指标（实时数据由 MCP 工具接入后显示）</div>
+  <div class="metrics-grid">
+    <div class="metric-card">
+      <div class="metric-icon">👥</div>
+      <div class="metric-value">1,248</div>
+      <div class="metric-label">在职人数</div>
+      <span class="metric-change up">↑ +12 本月</span>
+    </div>
+    <div class="metric-card">
+      <div class="metric-icon">🆕</div>
+      <div class="metric-value">23</div>
+      <div class="metric-label">本月新入职</div>
+      <span class="metric-change up">↑ +5 vs 上月</span>
+    </div>
+    <div class="metric-card">
+      <div class="metric-icon">📉</div>
+      <div class="metric-value">1.8%</div>
+      <div class="metric-label">月度离职率</div>
+      <span class="metric-change down">↓ -0.3% 改善</span>
+    </div>
+    <div class="metric-card">
+      <div class="metric-icon">🎯</div>
+      <div class="metric-value">47</div>
+      <div class="metric-label">开放招聘岗位</div>
+      <span class="metric-change neutral">→ 持平</span>
+    </div>
+    <div class="metric-card">
+      <div class="metric-icon">📚</div>
+      <div class="metric-value">87%</div>
+      <div class="metric-label">培训完成率</div>
+      <span class="metric-change up">↑ +5% 提升</span>
+    </div>
+    <div class="metric-card">
+      <div class="metric-icon">💚</div>
+      <div class="metric-value">+42</div>
+      <div class="metric-label">员工 eNPS</div>
+      <span class="metric-change up">↑ +8 本季</span>
+    </div>
+  </div>
+
+  <!-- 快捷操作 -->
+  <div class="section-title shortcuts-section">⚡ 常用操作</div>
+  <div class="shortcuts-grid" style="margin-bottom:24px;">
+    <button class="shortcut-btn" onclick="openChat('performance-agent', '帮我设计Q3的OKR目标体系')"><span class="shortcut-icon">🎯</span>设定季度 OKR</button>
+    <button class="shortcut-btn" onclick="openChat('talent-acquisition-agent', '帮我优化这个岗位的JD')"><span class="shortcut-icon">📝</span>优化招聘 JD</button>
+    <button class="shortcut-btn" onclick="openChat('compliance-risk-agent', '解除劳动合同需要满足哪些法律条件？')"><span class="shortcut-icon">⚖️</span>合规咨询</button>
+    <button class="shortcut-btn" onclick="openChat('hr-analytics-agent', '分析过去6个月的离职数据，找出规律')"><span class="shortcut-icon">📊</span>离职数据分析</button>
+    <button class="shortcut-btn" onclick="openChat('employee-experience-agent', '帮我设计新员工入职90天体验方案')"><span class="shortcut-icon">🤝</span>设计入职方案</button>
+    <button class="shortcut-btn" onclick="openChat('total-rewards-agent', '帮我做一个市场薪酬对标分析')"><span class="shortcut-icon">💰</span>薪酬对标分析</button>
+    <button class="shortcut-btn" onclick="openChat('learning-development-agent', '如何做人才九宫格盘点？')"><span class="shortcut-icon">🎓</span>人才盘点</button>
+    <button class="shortcut-btn" onclick="openChat('hr-strategy-agent', '帮我制定下半年的人才战略规划')"><span class="shortcut-icon">🏛️</span>人才战略规划</button>
+    <button class="shortcut-btn" onclick="openChat('performance-agent', '如何给绩效不达标的员工写PIP？')"><span class="shortcut-icon">📋</span>制定 PIP 计划</button>
+    <button class="shortcut-btn" onclick="openChat('hr-analytics-agent', '哪些员工是高离职风险？给出预警名单')"><span class="shortcut-icon">🚨</span>离职风险预警</button>
+  </div>
+
+  <!-- HR Agent 卡片 -->
+  <div class="section-title agents-section">🤖 HR AI 助手（点击与任意助手对话）</div>
+  <div class="agents-grid" id="agentsGrid"></div>
+
+</main>
+
+<!-- Chat 侧边栏 -->
+<div class="chat-overlay" id="chatOverlay" onclick="closeChat()"></div>
+<div class="chat-panel" id="chatPanel">
+  <div class="chat-panel-header">
+    <div class="chat-panel-avatar" id="panelAvatar" style="background:#ede9fe;"></div>
+    <div class="chat-panel-info">
+      <h3 id="panelTitle">HR助手</h3>
+      <p id="panelDesc">专业HR AI顾问</p>
+    </div>
+    <button class="chat-close" onclick="closeChat()">✕</button>
+  </div>
+  <div class="chat-messages" id="chatMessages"></div>
+  <div class="chat-input-area">
+    <div class="chat-quick-prompts" id="quickPrompts"></div>
+    <div class="chat-input-row">
+      <textarea class="chat-input" id="chatInput" rows="2" placeholder="输入你的问题...（Shift+Enter 换行）" onkeydown="handleKeydown(event)"></textarea>
+      <button class="send-btn" onclick="sendMessage()">发送</button>
+    </div>
+    <div class="lobe-tip">⚡ 接入 Lobe-chat 后将使用真实 AI 模型 · 当前为 UI 预览模式</div>
+  </div>
+</div>
+
+<script>
+// Agent 数据
+const agents = [
+  { id:"01", identifier:"hr-strategy-agent", title:"HR战略与组织设计", desc:"CHRO级战略合伙人，业务战略解码→人才规划→组织架构设计", avatar:"🏛️", tags:["战略规划","组织设计","编制预算"], color:"#6366f1", bg:"#eef2ff", scenarios:["帮我制定下半年的人才战略规划","设计一个新业务部门的组织架构","分析公司的人力编制，哪些部门人效最低？","如何构建公司文化体系？"] },
+  { id:"02", identifier:"talent-acquisition-agent", title:"招聘与人才获取", desc:"全链路招聘专家，JD优化→渠道策略→面试设计→Offer管理", avatar:"🎯", tags:["招聘","JD优化","灵活用工"], color:"#0ea5e9", bg:"#f0f9ff", scenarios:["帮我优化这个高级产品经理的JD","为技术团队制定校园招聘方案","分析最近3个月的招聘漏斗","如何提高Offer接受率？"] },
+  { id:"03", identifier:"performance-agent", title:"绩效管理专家", desc:"端到端绩效专家，OKR设定→过程辅导→评估校准→结果应用", avatar:"📊", tags:["OKR","绩效辅导","目标分解"], color:"#10b981", bg:"#f0fdf4", scenarios:["帮我设计Q3的OKR目标体系","如何给绩效不达标的员工写PIP？","如何组织一次绩效校准会议？","用STAR方法帮我写一个绩效反馈"] },
+  { id:"04", identifier:"total-rewards-agent", title:"全面薪酬与激励", desc:"薪酬体系架构师，薪酬对标→调薪方案→长期激励→福利设计", avatar:"💰", tags:["薪酬设计","奖金方案","股权激励"], color:"#f59e0b", bg:"#fffbeb", scenarios:["帮我做一个市场薪酬对标分析","设计年度调薪方案，如何与绩效联动？","我们想给核心员工做股权激励，怎么设计？","如何建立弹性福利积分制度？"] },
+  { id:"05", identifier:"learning-development-agent", title:"学习与人才发展", desc:"组织能力构建专家，能力诊断→培训设计→高潜培养→继任规划", avatar:"🎓", tags:["培训设计","高潜人才","继任计划"], color:"#8b5cf6", bg:"#f5f3ff", scenarios:["帮我做一个新任管理者培训方案","如何做人才九宫格盘点？","制定一个高潜人才发展加速计划","如何评估培训效果（柯氏四级）？"] },
+  { id:"06", identifier:"employee-experience-agent", title:"员工体验与关系", desc:"员工全旅程设计者，入职体验→日常服务→敬业度→离职管理", avatar:"❤️", tags:["员工体验","敬业度","入职设计"], color:"#ec4899", bg:"#fdf2f8", scenarios:["帮我设计新员工入职90天体验方案","如何提升员工敬业度（eNPS）？","处理一个员工投诉管理者的申诉案例","分析最近的离职面谈，找出主要离职原因"] },
+  { id:"07", identifier:"compliance-risk-agent", title:"HR合规与风控", desc:"用工风险防火墙，劳动合同→薪酬合规→数据隐私→风险预警", avatar:"⚖️", tags:["劳动法","合规审查","风险预警"], color:"#ef4444", bg:"#fef2f2", scenarios:["解除劳动合同需要满足哪些法律条件？","我们想裁员10人，法律程序是什么？","检查我们的员工手册是否有合规问题","如何确保员工数据符合个人信息保护法？"] },
+  { id:"08", identifier:"hr-analytics-agent", title:"HR数据分析", desc:"HR数据洞察引擎，数据分析→离职预测→ROI计算→仪表盘设计", avatar:"📈", tags:["数据分析","离职预测","HR ROI"], color:"#06b6d4", bg:"#ecfeff", scenarios:["分析过去6个月的离职数据，找出规律","哪些员工是高离职风险？给出预警名单","计算年度培训项目的ROI","设计一个给CHRO汇报的HR价值仪表盘"] },
+];
+
+let currentAgent = null;
+
+// 渲染 Agent 卡片
+function renderAgents() {
+  const grid = document.getElementById('agentsGrid');
+  grid.innerHTML = agents.map(a => `
+    <div class="agent-card" style="--agent-color:${a.color};--agent-bg:${a.bg}" onclick="openChat('${a.identifier}', '')">
+      <div class="agent-header">
+        <div class="agent-avatar">${a.avatar}</div>
+        <div class="agent-info">
+          <h3>${a.title}</h3>
+          <p>${a.id} / ${a.identifier}</p>
+        </div>
+      </div>
+      <div class="agent-tags">
+        ${a.tags.map(t => `<span class="agent-tag">${t}</span>`).join('')}
+      </div>
+      <ul class="agent-scenarios">
+        ${a.scenarios.slice(0,3).map(s => `<li onclick="event.stopPropagation();openChat('${a.identifier}','${s}')">${s}</li>`).join('')}
+      </ul>
+      <button class="chat-btn" onclick="event.stopPropagation();openChat('${a.identifier}','')">开始对话 →</button>
+    </div>
+  `).join('');
+}
+
+// 打开聊天面板
+function openChat(identifier, initialMsg) {
+  currentAgent = agents.find(a => a.identifier === identifier) || agents[0];
+  document.getElementById('panelAvatar').textContent = currentAgent.avatar;
+  document.getElementById('panelAvatar').style.background = currentAgent.bg;
+  document.getElementById('panelTitle').textContent = currentAgent.title;
+  document.getElementById('panelDesc').textContent = currentAgent.desc;
+
+  // 快捷提示
+  const qp = document.getElementById('quickPrompts');
+  qp.innerHTML = currentAgent.scenarios.slice(0,3).map(s =>
+    `<button class="quick-prompt" onclick="sendQuick('${s.replace(/'/g,"\\'")}')">💡 ${s}</button>`
+  ).join('');
+
+  // 重置消息
+  const msgs = document.getElementById('chatMessages');
+  msgs.innerHTML = `
+    <div class="msg assistant">
+      <div class="msg-bubble">👋 你好！我是 <strong>${currentAgent.title}</strong>。<br><br>${currentAgent.desc}<br><br>你可以直接描述你的问题，或点击下方快捷提示开始。</div>
+      <div class="msg-time">刚刚</div>
+    </div>
+  `;
+
+  document.getElementById('chatOverlay').classList.add('open');
+  document.getElementById('chatPanel').classList.add('open');
+
+  if (initialMsg) {
+    document.getElementById('chatInput').value = initialMsg;
+    setTimeout(sendMessage, 200);
+  } else {
+    document.getElementById('chatInput').focus();
+  }
+}
+
+function closeChat() {
+  document.getElementById('chatOverlay').classList.remove('open');
+  document.getElementById('chatPanel').classList.remove('open');
+}
+
+function sendQuick(msg) {
+  document.getElementById('chatInput').value = msg;
+  sendMessage();
+}
+
+function handleKeydown(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+}
+
+function sendMessage() {
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if (!text) return;
+
+  const msgs = document.getElementById('chatMessages');
+
+  // 用户消息
+  const now = new Date().toLocaleTimeString('zh-CN', {hour:'2-digit',minute:'2-digit'});
+  msgs.innerHTML += `
+    <div class="msg user">
+      <div class="msg-bubble">${escapeHtml(text)}</div>
+      <div class="msg-time">${now}</div>
+    </div>
+  `;
+  input.value = '';
+  msgs.scrollTop = msgs.scrollHeight;
+
+  // 模拟 AI 响应（接入 Lobe-chat 后替换为真实 API）
+  setTimeout(() => {
+    msgs.innerHTML += `
+      <div class="msg assistant">
+        <div class="msg-bubble">⚡ <strong>预览模式</strong>：此对话将由 <strong>${currentAgent.title}</strong> 处理。<br><br>部署 Lobe-chat 并配置 <code>${currentAgent.identifier}</code> 后，将获得真实 AI 响应。<br><br>你的问题已记录：<br><em>"${escapeHtml(text)}"</em></div>
+        <div class="msg-time">${now}</div>
+      </div>
+    `;
+    msgs.scrollTop = msgs.scrollHeight;
+  }, 800);
+}
+
+function escapeHtml(text) {
+  return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// 初始化
+renderAgents();
+</script>
+</body>
+</html>
